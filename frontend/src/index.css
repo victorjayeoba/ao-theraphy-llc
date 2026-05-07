@@ -1,0 +1,185 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* A&O Therapy Design System - Modern, Professional, Healing */
+
+@layer base {
+:root {
+    /* Brand Colors - Deep Blue & Teal Healing Palette */
+    --background: 0 0% 100%;
+    --foreground: 217 33% 17%;
+    
+    /* Primary - Deep Blue (#002B5C) */
+    --primary: 217 100% 18%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* Accent - Healing Teal (#00A8A8) */
+    --accent: 180 100% 33%;
+    --accent-foreground: 0 0% 100%;
+    
+    /* Secondary - Soft Professional */
+    --secondary: 217 32% 96%;
+    --secondary-foreground: 217 33% 17%;
+    
+    /* Cards & UI */
+    --card: 0 0% 100%;
+    --card-foreground: 217 33% 17%;
+    
+    /* Muted Elements */
+    --muted: 217 32% 96%;
+    --muted-foreground: 217 10% 46%;
+    
+    /* Interactive States */
+    --border: 217 20% 88%;
+    --input: 217 20% 88%;
+    --ring: 217 100% 18%;
+    
+    /* Status Colors */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(217 100% 18%) 0%, hsl(180 100% 33%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(217 32% 98%) 100%);
+    --gradient-accent: linear-gradient(90deg, hsl(180 100% 33%) 0%, hsl(180 100% 40%) 100%);
+    
+    /* Shadows */
+    --shadow-card: 0 4px 6px -1px hsl(217 100% 18% / 0.1), 0 2px 4px -2px hsl(217 100% 18% / 0.1);
+    --shadow-card-hover: 0 10px 15px -3px hsl(217 100% 18% / 0.1), 0 4px 6px -4px hsl(217 100% 18% / 0.1);
+    --shadow-hero: 0 20px 25px -5px hsl(217 100% 18% / 0.1), 0 8px 10px -6px hsl(217 100% 18% / 0.1);
+    
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+    --radius: 0.75rem;
+}
+
+.dark {
+    /* Dark mode with healing theme */
+    --background: 217 33% 9%;
+    --foreground: 0 0% 98%;
+    
+    --primary: 180 100% 40%;
+    --primary-foreground: 217 33% 9%;
+    
+    --accent: 217 100% 25%;
+    --accent-foreground: 0 0% 100%;
+    
+    --secondary: 217 33% 15%;
+    --secondary-foreground: 0 0% 98%;
+    
+    --card: 217 33% 12%;
+    --card-foreground: 0 0% 98%;
+    
+    --muted: 217 33% 15%;
+    --muted-foreground: 217 10% 70%;
+    
+    --border: 217 33% 18%;
+    --input: 217 33% 18%;
+    --ring: 180 100% 40%;
+    
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 98%;
+}
+
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-inter antialiased;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  /* Hero Section Styles */
+  .hero-gradient {
+    background: var(--gradient-hero);
+  }
+  
+  .card-gradient {
+    background: var(--gradient-card);
+  }
+  
+  /* Interactive Cards */
+  .therapy-card {
+    @apply bg-card border border-border rounded-xl p-6 shadow-sm transition-all duration-300;
+    box-shadow: var(--shadow-card);
+  }
+  
+  .therapy-card:hover {
+    @apply transform scale-105;
+    box-shadow: var(--shadow-card-hover);
+  }
+  
+  /* Floating Elements */
+  .floating-card {
+    @apply animate-float;
+  }
+  
+  /* Text Gradients */
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
+  }
+  
+  /* Professional Button Styles */
+  .btn-hero {
+    @apply bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-8 py-3 rounded-xl transition-all duration-300 transform hover:scale-105;
+    box-shadow: var(--shadow-hero);
+  }
+  
+  .btn-accent {
+    @apply bg-accent hover:bg-accent/90 text-accent-foreground font-semibold px-6 py-3 rounded-lg transition-all duration-300;
+  }
+  
+  /* Modern Navigation */
+  .nav-link {
+    @apply text-foreground/80 hover:text-primary font-medium transition-colors duration-200 relative;
+  }
+  
+  .nav-link::after {
+    @apply content-[''] absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300;
+  }
+  
+  .nav-link:hover::after {
+    @apply w-full;
+  }
+}
+
+/* Swiper Custom Styles */
+.products-swiper .swiper-button-next,
+.products-swiper .swiper-button-prev {
+  @apply bg-primary text-primary-foreground rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:bg-primary/90 transition-colors;
+}
+
+.products-swiper .swiper-button-next::after,
+.products-swiper .swiper-button-prev::after {
+  @apply text-sm font-bold;
+}
+
+.products-swiper .swiper-button-disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+
+.swiper-button-prev svg{
+  height: 20px !important;
+  width: 20px !important;
+}
+
+.swiper-button-next svg{
+  height: 20px !important;
+  width: 20px !important;
+}
+    
