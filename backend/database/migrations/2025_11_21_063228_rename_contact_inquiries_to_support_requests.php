@@ -13,12 +13,16 @@ return new class extends Migration
 
     public function up(): void
     {
-        Schema::rename('contact_inquiries', 'support');
+        if (Schema::hasTable('contact_inquiries') && !Schema::hasTable('support')) {
+            Schema::rename('contact_inquiries', 'support');
+        }
     }
 
     public function down(): void
     {
-        Schema::rename('support', 'contact_inquiries');
+        if (Schema::hasTable('support') && !Schema::hasTable('contact_inquiries')) {
+            Schema::rename('support', 'contact_inquiries');
+        }
     }
 
 };
