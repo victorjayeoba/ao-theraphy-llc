@@ -231,7 +231,7 @@ const HomePage = () => {
                   Empowering <TypingText text="Neurodiverse" speed={80} className="text-accent" /> Lives Through Therapy
                 </h1>
                 <p className="text-xl text-primary-foreground/90 leading-relaxed">
-                  Specialized sensory processing and traumatic brain injury therapy. 
+                  Specialized in all occupational therapy and traumatic brain injury therapy for all ages.
                   Compassionate, holistic, evidence-based treatment that celebrates every individual unique potential.
                 </p>
               </div>
