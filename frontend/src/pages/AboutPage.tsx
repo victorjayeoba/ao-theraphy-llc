@@ -124,7 +124,7 @@ const AboutPage = () => {
       description: "Established private practice specializing in sensory processing and traumatic brain injury therapy. Created comprehensive Student Mentorship Program partnering with local universities to provide clinical training opportunities for OT students. Serves as Clinical and School-based occupational therapist for multiple school districts and Rehabilitation Centers in Illinois."
     },
     {
-      role: "Senior Occupational Therapist",
+      role: "Occupational Therapy Supervisor",
       organization: "Chicago Children's Rehabilitation Center",
       period: "2016 - 2020",
       description: "Led sensory integration program serving children with autism, ADHD, sensory processing disorders, mild to severe/complex medical/orthopedic issues, and developmental delays in rehabilitation settings."
