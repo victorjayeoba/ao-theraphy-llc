@@ -273,10 +273,10 @@ const ServicesPage = () => {
                 </h3>
                 <div className="grid grid-cols-1 gap-3">
                   {[
-                    "Children with autism spectrum disorders",
+                    "Individuals with autism spectrum disorders",
                     "Individuals with ADHD or attention challenges",
-                    "Those with sensory processing disorders",
-                    "People experiencing sensory defensiveness",
+                    "Individuals with sensory processing disorders",
+                    "Individuals experiencing sensory defensiveness",
                     "Individuals seeking sensory regulation strategies",
                   ].map((item, index) => (
                     <div key={index} className="flex items-center gap-3">
