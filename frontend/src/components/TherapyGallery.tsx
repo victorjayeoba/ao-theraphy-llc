@@ -13,7 +13,7 @@ import otConference from "@/assets/gallery/ot-conference.jpg";
 import patientCare from "@/assets/gallery/patient-care.jpg";
 import classroomSession from "@/assets/gallery/student1.jpeg";
 import researchPoster from "@/assets/gallery/research-poster.jpg";
-import learningSession from "@/assets/gallery/classroom-session.jpg";
+import learningSession from "@/assets/gallery/classroom-session.png";
 import conferencePresentation from "/ani.jpg";
 import honorSocietyCertificate from "/omega-nu-lambda.jpg";
 import student2 from "@/assets/gallery/student2.png";
