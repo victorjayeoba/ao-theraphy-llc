@@ -16,7 +16,7 @@ import researchPoster from "@/assets/gallery/research-poster.jpg";
 import learningSession from "@/assets/gallery/classroom-session.jpg";
 import conferencePresentation from "/ani.jpg";
 import honorSocietyCertificate from "/omega-nu-lambda.jpg";
-import student2 from "@/assets/gallery/student2.jpeg";
+import student2 from "@/assets/gallery/student2.png";
 import student3 from "@/assets/gallery/student3.jpg";
 import student4 from "@/assets/gallery/student4.jpg";
 
@@ -33,7 +33,7 @@ const galleryImages = [
   },
   {
     src: therapyRoom,
-    alt: "Therapy room with sensory equipment",
+    alt: "Therapy room with sensory and motor equipment",
     title: "Therapy Environment",
   },
   {
@@ -53,7 +53,7 @@ const galleryImages = [
   },
   {
     src: otConference,
-    alt: "Dr. Ani at occupational therapy conference",
+    alt: "Dr. Ani educating younger learners about Occupational Therapy duties",
     title: "Professional Development",
   },
   {
@@ -88,18 +88,18 @@ const galleryImages = [
   },
   {
     src: student2,
-    alt: "student2",
-    title: "Academic Recognition",
+    alt: "Student practicing balance on a balance beam",
+    title: "Gross Motor Skills",
   },
   {
     src: student3,
-    alt: "student3",
-    title: "Academic Recognition",
+    alt: "Student completed military base construction project",
+    title: "STEM Project",
   },
   {
     src: student4,
-    alt: "student4",
-    title: "Academic Recognition",
+    alt: "Building Fine Motor and Visual Motor skills through innovative techniques",
+    title: "Therapy session",
   },
 ];
 
