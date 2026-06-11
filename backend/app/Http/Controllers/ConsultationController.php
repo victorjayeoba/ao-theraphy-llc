@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Consultation;
 use App\Mail\ConsultationThankYouMail;
+use App\Mail\ConsultationAdminNotificationMail;
 use Illuminate\Support\Facades\Mail;
 
 class ConsultationController extends Controller
@@ -19,7 +20,7 @@ class ConsultationController extends Controller
             'preferred_date'  => 'required|date',
             'preferred_time'  => 'required|string|max:20',
             'session_type'    => 'required|in:Virtual,In-Person',
-            'needs'           => 'nullable|string|max:2000',
+            'notes'           => 'nullable|string|max:2000',
         ]);
 
         $formattedTime = date("H:i:s", strtotime($validated['preferred_time']));
@@ -32,11 +33,17 @@ class ConsultationController extends Controller
             'preferred_date' => $validated['preferred_date'],
             'preferred_time' => $formattedTime,
             'session_type'   => $validated['session_type'],
-            'needs'          => $validated['needs'] ?? null,
+            'needs'          => $validated['notes'] ?? null,
         ]);
 
-        // Send thank you mail
+        // Send thank you mail to the customer
         Mail::to($consultation->email)->send(new ConsultationThankYouMail($consultation));
+
+        // Notify the admin/info inbox that a new request came in
+        $adminAddress = env('MAIL_ADMIN_ADDRESS', config('mail.from.address'));
+        if (!empty($adminAddress)) {
+            Mail::to($adminAddress)->send(new ConsultationAdminNotificationMail($consultation));
+        }
 
         return response()->json([
             'status' => true,

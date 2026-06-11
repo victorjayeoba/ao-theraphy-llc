@@ -35,6 +35,8 @@ const ConsultationPage = () => {
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  // tracks which required fields are missing so we can highlight them
+  const [missingFields, setMissingFields] = useState<string[]>([]);
 
   // enhanced modal state
   const [bookingRef, setBookingRef] = useState<string | null>(null);
@@ -65,12 +67,36 @@ const ConsultationPage = () => {
     e.preventDefault();
     setSuccessMessage(null);
     setErrorMessage(null);
-    // basic validation
-    if (!firstName || !lastName || !email || !phone) {
-      setErrorMessage("Please fill in all required fields.");
+
+    // Build a list of every missing required field by friendly name + key
+    const checks: { key: string; label: string; ok: boolean }[] = [
+      { key: "firstName", label: "First Name", ok: !!firstName },
+      { key: "lastName", label: "Last Name", ok: !!lastName },
+      { key: "email", label: "Email Address", ok: !!email },
+      { key: "phone", label: "Phone Number", ok: !!phone },
+      { key: "preferredDate", label: "Preferred Date", ok: !!preferredDate },
+      { key: "selectedTime", label: "Preferred Time", ok: !!selectedTime },
+      { key: "sessionPreference", label: "Session Type", ok: !!sessionPreference },
+    ];
+    const missing = checks.filter((c) => !c.ok);
+
+    if (missing.length > 0) {
+      setMissingFields(missing.map((m) => m.key));
+      setErrorMessage(
+        `Please complete the following before submitting: ${missing
+          .map((m) => m.label)
+          .join(", ")}.`
+      );
+      // bring the error/first missing field into view
+      requestAnimationFrame(() => {
+        document
+          .getElementById("consultation-error")
+          ?.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
       return;
     }
 
+    setMissingFields([]);
     setLoading(true);
     try {
       const payload = {
@@ -137,14 +163,18 @@ const ConsultationPage = () => {
     }
   };
 
-  const isFormValid =
-    firstName &&
-    lastName &&
-    email &&
-    phone &&
-    preferredDate &&
-    selectedTime &&
-    sessionPreference;
+  // true when this field key is currently flagged as missing
+  const isMissing = (key: string) => missingFields.includes(key);
+
+  // Selecting a service card also sets the matching Session Type in the form,
+  // so the two sides stay in sync and the user doesn't have to pick twice.
+  const selectService = (service: any) => {
+    setSelectedService(service.id);
+    const t = (service.type || "").toString().toLowerCase();
+    const pref = t.includes("person") ? "In-Person" : "Virtual";
+    setSessionPreference(pref);
+    setMissingFields((m) => m.filter((k) => k !== "sessionPreference"));
+  };
 
   useEffect(() => {
     const getSession = async () => {
@@ -287,6 +317,17 @@ const ConsultationPage = () => {
               <div className="text-sm text-destructive">{servicesError}</div>
             )}
 
+            {/* Guiding hint: cards are gated on session type */}
+            {!sessionPreference && (
+              <div className="flex items-start gap-2 rounded-lg border border-primary/30 bg-primary/5 px-4 py-3 text-sm text-foreground">
+                <span aria-hidden="true">👉</span>
+                <span>
+                  Choose <strong>Virtual</strong> or <strong>In-Person</strong> under{" "}
+                  <strong>Session Type</strong> in the form to browse and select a service.
+                </span>
+              </div>
+            )}
+
             {/* Virtual Sessions */}
             <div data-aos="fade-up" data-aos-delay="100">
               <div className="flex items-center gap-3 mb-6">
@@ -309,7 +350,7 @@ const ConsultationPage = () => {
                       } ${!isAllowed ? "opacity-60 pointer-events-none cursor-not-allowed" : "cursor-pointer"}`}
                       onClick={() => {
                         if (!isAllowed) return;
-                        setSelectedService(service.id);
+                        selectService(service);
                       }}
                     >
                       <CardHeader>
@@ -364,7 +405,7 @@ const ConsultationPage = () => {
                       } ${!isAllowed ? "opacity-60 pointer-events-none cursor-not-allowed" : "cursor-pointer"}`}
                       onClick={() => {
                         if (!isAllowed) return;
-                        setSelectedService(service.id);
+                        selectService(service);
                       }}
                     >
                       <CardHeader>
@@ -483,7 +524,11 @@ const ConsultationPage = () => {
                         placeholder="Your first name"
                         required
                         value={firstName}
-                        onChange={(e: any) => setFirstName(e.target.value)}
+                        onChange={(e: any) => {
+                          setFirstName(e.target.value);
+                          setMissingFields((m) => m.filter((k) => k !== "firstName"));
+                        }}
+                        className={isMissing("firstName") ? "border-destructive ring-1 ring-destructive" : ""}
                       />
                     </div>
                     <div>
@@ -494,7 +539,11 @@ const ConsultationPage = () => {
                         placeholder="Your last name"
                         required
                         value={lastName}
-                        onChange={(e: any) => setLastName(e.target.value)}
+                        onChange={(e: any) => {
+                          setLastName(e.target.value);
+                          setMissingFields((m) => m.filter((k) => k !== "lastName"));
+                        }}
+                        className={isMissing("lastName") ? "border-destructive ring-1 ring-destructive" : ""}
                       />
                     </div>
                   </div>
@@ -508,7 +557,11 @@ const ConsultationPage = () => {
                       placeholder="your@email.com"
                       required
                       value={email}
-                      onChange={(e: any) => setEmail(e.target.value)}
+                      onChange={(e: any) => {
+                        setEmail(e.target.value);
+                        setMissingFields((m) => m.filter((k) => k !== "email"));
+                      }}
+                      className={isMissing("email") ? "border-destructive ring-1 ring-destructive" : ""}
                     />
                   </div>
 
@@ -521,26 +574,38 @@ const ConsultationPage = () => {
                       placeholder="(555) 123-4567"
                       required
                       value={phone}
-                      onChange={(e: any) => setPhone(e.target.value)}
+                      onChange={(e: any) => {
+                        setPhone(e.target.value);
+                        setMissingFields((m) => m.filter((k) => k !== "phone"));
+                      }}
+                      className={isMissing("phone") ? "border-destructive ring-1 ring-destructive" : ""}
                     />
                   </div>
 
                   <div>
                     <label className="text-sm font-medium text-foreground mb-2 block">
-                      Preferred Date
+                      Preferred Date <span className="text-destructive">*</span>
                     </label>
                     <Input
                       type="date"
                       value={preferredDate}
-                      onChange={(e: any) => setPreferredDate(e.target.value)}
+                      onChange={(e: any) => {
+                        setPreferredDate(e.target.value);
+                        setMissingFields((m) => m.filter((k) => k !== "preferredDate"));
+                      }}
+                      className={isMissing("preferredDate") ? "border-destructive ring-1 ring-destructive" : ""}
                     />
                   </div>
 
                   <div>
                     <label className="text-sm font-medium text-foreground mb-2 block">
-                      Preferred Time
+                      Preferred Time <span className="text-destructive">*</span>
                     </label>
-                    <div className="grid grid-cols-3 gap-2">
+                    <div
+                      className={`grid grid-cols-3 gap-2 ${
+                        isMissing("selectedTime") ? "rounded-md ring-1 ring-destructive p-2" : ""
+                      }`}
+                    >
                       {timeSlots.map((time) => (
                         <Badge
                           key={time}
@@ -550,7 +615,10 @@ const ConsultationPage = () => {
                               ? "bg-primary text-primary-foreground"
                               : "hover:bg-primary/10"
                           }`}
-                          onClick={() => setSelectedTime(time)}
+                          onClick={() => {
+                            setSelectedTime(time);
+                            setMissingFields((m) => m.filter((k) => k !== "selectedTime"));
+                          }}
                         >
                           {time}
                         </Badge>
@@ -560,9 +628,13 @@ const ConsultationPage = () => {
 
                   <div>
                     <label className="text-sm font-medium text-foreground mb-2 block">
-                      Session Type Preference
+                      Session Type Preference <span className="text-destructive">*</span>
                     </label>
-                    <div className="flex flex-wrap gap-2">
+                    <div
+                      className={`flex flex-wrap gap-2 ${
+                        isMissing("sessionPreference") ? "rounded-md ring-1 ring-destructive p-2" : ""
+                      }`}
+                    >
                       <Badge
                         variant={sessionPreference === "Virtual" ? "default" : "outline"}
                         className={`cursor-pointer hover:bg-primary/10 ${
@@ -570,7 +642,10 @@ const ConsultationPage = () => {
                             ? "bg-primary text-primary-foreground"
                             : ""
                         }`}
-                        onClick={() => setSessionPreference("Virtual")}
+                        onClick={() => {
+                          setSessionPreference("Virtual");
+                          setMissingFields((m) => m.filter((k) => k !== "sessionPreference"));
+                        }}
                       >
                         <Video className="w-3 h-3 mr-1" />
                         Virtual
@@ -582,7 +657,10 @@ const ConsultationPage = () => {
                             ? "bg-primary text-primary-foreground"
                             : ""
                         }`}
-                        onClick={() => setSessionPreference("In-Person")}
+                        onClick={() => {
+                          setSessionPreference("In-Person");
+                          setMissingFields((m) => m.filter((k) => k !== "sessionPreference"));
+                        }}
                       >
                         <MapPin className="w-3 h-3 mr-1" />
                         In-Person
@@ -603,18 +681,28 @@ const ConsultationPage = () => {
                   </div>
 
                   {errorMessage && (
-                    <div className="text-sm text-destructive">There was an error submitting the form.</div>
+                    <div
+                      id="consultation-error"
+                      role="alert"
+                      className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+                    >
+                      <span aria-hidden="true">⚠️</span>
+                      <span>{errorMessage}</span>
+                    </div>
                   )}
 
                   <Button
                     type="submit"
                     size="lg"
                     className="btn-hero w-full"
-                    disabled={loading || !isFormValid}
+                    disabled={loading}
                   >
                     <Calendar className="w-5 h-5 mr-2" />
                     {loading ? "Submitting..." : "Request Consultation"}
                   </Button>
+                  <p className="text-xs text-muted-foreground text-center">
+                    Fields marked <span className="text-destructive">*</span> are required.
+                  </p>
                 </form>
               </CardContent>
             </Card>
