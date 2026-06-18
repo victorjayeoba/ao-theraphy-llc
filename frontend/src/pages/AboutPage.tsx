@@ -157,6 +157,11 @@ const AboutPage = () => {
       icon: Lightbulb,
       title: "Celebrating Uniqueness",
       description: "Neurodiversity is a strength. Therapy should honor and support each person's individual way of experiencing the world."
+    },
+    {
+      icon: Users,
+      title: "Team Collaboration",
+      description: "Team collaboration involving Occupational Therapists, Physical Therapists, and Speech Therapists to ensure utmost care for our patients is guaranteed to the fullest extent."
     }
   ];
 

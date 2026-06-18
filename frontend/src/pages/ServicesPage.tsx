@@ -157,6 +157,42 @@ const ServicesPage = () => {
           </p>
         </div>
 
+        {/* Areas of Specialization */}
+        <section className="mb-20" data-aos="fade-up">
+          <div className="max-w-5xl mx-auto px-2 sm:px-4">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-foreground mb-4">
+                Areas of Specialization
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+                Our occupational therapy consultant specializes in a broad range
+                of conditions, providing holistic, individualized care for each.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[
+                "Sensory Processing Disorders",
+                "Traumatic Brain Injury (TBI)",
+                "Neurological Disorders (ADHD & Autism Spectrum Disorder)",
+                "Developmental Delays",
+                "Orthopedic-related issues",
+                "Socio-Emotional & Cognitive Disorders",
+              ].map((area, index) => (
+                <div
+                  key={index}
+                  className="flex items-start gap-3 p-4 rounded-lg bg-secondary/30 border border-white/10"
+                  data-aos="fade-up"
+                  data-aos-delay={`${(index % 3) * 100}`}
+                >
+                  <CheckCircle className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
+                  <span className="text-foreground font-medium">{area}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Main Services */}
         <section className="mb-20">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

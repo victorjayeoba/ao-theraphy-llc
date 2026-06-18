@@ -1,0 +1,3 @@
+# Local product image export artifacts (not source code)
+/product-images/
+/products-export.json
