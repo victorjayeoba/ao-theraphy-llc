@@ -19,6 +19,7 @@ import honorSocietyCertificate from "/omega-nu-lambda.jpg";
 import student2 from "@/assets/gallery/student2.png";
 import student3 from "@/assets/gallery/student3.jpg";
 import student4 from "@/assets/gallery/student4.jpg";
+import withTheStudents from "@/assets/gallery/with_the_students.jpg";
 
 const galleryImages = [
   {
@@ -100,6 +101,11 @@ const galleryImages = [
     src: student4,
     alt: "Building Fine Motor and Visual Motor skills through innovative techniques",
     title: "Therapy session",
+  },
+  {
+    src: withTheStudents,
+    alt: "Dr. Ani with the LewisU graduate FW students at the Charitable Preschool",
+    title: "Dr. Ani with the LewisU graduate FW students at the Charitable Preschool",
   },
 ];
 
