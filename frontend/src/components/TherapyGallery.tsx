@@ -73,8 +73,8 @@ const galleryImages = [
   },
   {
     src: learningSession,
-    alt: "Children participating in a classroom-based therapy and learning session",
-    title: "Classroom Learning",
+    alt: "Dr. Ani with the LewisU graduate FW students at the Charitable Preschool",
+    title: "Charitable Preschool",
   },
   {
     src: conferencePresentation,

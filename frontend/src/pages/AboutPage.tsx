@@ -245,8 +245,11 @@ const AboutPage = () => {
             PhD – Doctor of Philosophy in Education | MOT, OTR/L
           </p> */}
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Dedicated to empowering neurodiverse individuals and families through compassionate, 
+            Dedicated to empowering neurodiverse individuals and families through compassionate,
             evidence-based occupational therapy specializing in sensory processing and traumatic brain injury support.
+          </p>
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed mt-4">
+            Team collaboration involving Occupational Therapists, Physical Therapists, and Speech Therapists to ensure utmost care for our patients is guaranteed to the fullest extent.
           </p>
         </div>
 

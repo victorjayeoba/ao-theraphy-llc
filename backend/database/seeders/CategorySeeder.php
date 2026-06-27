@@ -28,6 +28,7 @@ class CategorySeeder extends Seeder
             'Motor/Orthopedic Tools',
             'Handwriting Adaptive Tools',
             'Hearing/Visual Impairment Tools',
+            'Safety Locks/Safer Homes',
         ];
 
         // The categories table is just (id, name) — no timestamp columns —

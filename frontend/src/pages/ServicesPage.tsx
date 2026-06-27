@@ -157,42 +157,6 @@ const ServicesPage = () => {
           </p>
         </div>
 
-        {/* Areas of Specialization */}
-        <section className="mb-20" data-aos="fade-up">
-          <div className="max-w-5xl mx-auto px-2 sm:px-4">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-foreground mb-4">
-                Areas of Specialization
-              </h2>
-              <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                Our occupational therapy consultant specializes in a broad range
-                of conditions, providing holistic, individualized care for each.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {[
-                "Sensory Processing Disorders",
-                "Traumatic Brain Injury (TBI)",
-                "Neurological Disorders (ADHD & Autism Spectrum Disorder)",
-                "Developmental Delays",
-                "Orthopedic-related issues",
-                "Socio-Emotional & Cognitive Disorders",
-              ].map((area, index) => (
-                <div
-                  key={index}
-                  className="flex items-start gap-3 p-4 rounded-lg bg-secondary/30 border border-white/10"
-                  data-aos="fade-up"
-                  data-aos-delay={`${(index % 3) * 100}`}
-                >
-                  <CheckCircle className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
-                  <span className="text-foreground font-medium">{area}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
         {/* Main Services */}
         <section className="mb-20">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -441,9 +405,10 @@ const ServicesPage = () => {
                   <h3 className="text-xl font-semibold text-foreground mb-6">Services Include:</h3>
                   <div className="space-y-4">
                     {[
+                      "Specializes in making changes to a person's work environment to improve motor functional performance and workplace safety",
+                      "Provides work compensation and adaptation services for individuals with work-related injuries",
                       "Work environment assessment and modifications",
                       "Ergonomic workplace evaluations",
-                      "Work Compensation and adaptation for work related injuries",
                       "Functional performance improvement strategies",
                       "Safety workplace enhancements",
                       "Adaptive equipment recommendations"
@@ -462,29 +427,39 @@ const ServicesPage = () => {
           </div>
         </section>
 
-        <section className="py-10 px-6 bg-white">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-              Environmental Modification
-            </h2>
-            <ul className="list-disc list-inside text-gray-700 space-y-2">
-              <li>
-                Specializes in making changes to a person's work environment to
-                improve{" "}
-                <span className="font-medium">
-                  motor functional performance
-                </span>{" "}
-                and <span className="font-medium">workplace safety</span>.
-              </li>
-              <li>
-                Provides{" "}
-                <span className="font-medium">
-                  work compensation and adaptation
-                </span>{" "}
-                services for individuals with{" "}
-                <span className="font-medium">work-related injuries</span>.
-              </li>
-            </ul>
+        {/* Areas of Specialization */}
+        <section className="mb-20" data-aos="fade-up">
+          <div className="max-w-5xl mx-auto px-2 sm:px-4">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-foreground mb-4">
+                Areas of Specialization
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+                Our occupational therapy consultant specializes in a broad range
+                of conditions, providing holistic, individualized care for each.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[
+                "Sensory Processing Disorders",
+                "Traumatic Brain Injury (TBI)",
+                "Neurological Disorders (ADHD & Autism Spectrum Disorder)",
+                "Developmental Delays",
+                "Orthopedic-related issues",
+                "Socio-Emotional & Cognitive Disorders",
+              ].map((area, index) => (
+                <div
+                  key={index}
+                  className="flex items-start gap-3 p-4 rounded-lg bg-secondary/30 border border-white/10"
+                  data-aos="fade-up"
+                  data-aos-delay={`${(index % 3) * 100}`}
+                >
+                  <CheckCircle className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
+                  <span className="text-foreground font-medium">{area}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
