@@ -69,6 +69,7 @@ const AboutPage = () => {
       img:educationImg,
       title: "PhD – Doctor of Philosophy in Educational Leadership",
       institution: "National University, San Diego, CA", // Update when details provided
+      certifiedBy: "American Occupational Therapy Association",
       year: "2024",
       type: "Education",
       highlight: true // Added highlight flag
@@ -77,6 +78,7 @@ const AboutPage = () => {
       img:licenseImg,
       title: "Masters of Occupational Therapy",
       institution: "Governors State University, IL",
+      certifiedBy: "Illinois Occupational Therapy Association",
       year: "05/2011",
       type: "Education"
     },
@@ -441,7 +443,13 @@ const AboutPage = () => {
                             <img src={credential.img} alt="" />
                       <div>
                         <h4 className="font-semibold text-foreground text-base mb-2">{credential.title}</h4>
-                        <p className="text-muted-foreground text-sm mb-3">{credential.institution}</p>
+                        <p className="text-muted-foreground text-sm mb-1">{credential.institution}</p>
+                        {credential.certifiedBy && (
+                          <p className="text-sm mb-3">
+                            <span className="font-semibold text-foreground">Certified by:</span>{" "}
+                            <span className="text-muted-foreground">{credential.certifiedBy}</span>
+                          </p>
+                        )}
                         <Badge className="bg-accent/10 text-accent hover:bg-accent/20 text-xs font-semibold">
                           {credential.year}
                         </Badge>
