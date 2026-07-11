@@ -19,8 +19,8 @@ import {
 } from "lucide-react";
 import { Carousel } from "@/components/ui/carousel";
 import { ImageGallery } from "@/components/ui/image-gallery";
-import educationImg from "/national-university.png"
-import licenseImg from "/Governors State University - An Illinois Public University.png"
+import educationImg from "@/assets/sch_1.jpg"
+import licenseImg from "@/assets/sch_2.jpg"
 import certificateImg from "/nbcot.png"
 
 interface GalleryItem {
