@@ -40,7 +40,7 @@ const Header = () => {
           <Link to="/" className="flex items-center">
             <img 
               src={logo} 
-              alt="A&O therapy LLC" 
+              alt="A&O Therapy LLC" 
               className="h-12 w-auto object-contain"
             />
           </Link>

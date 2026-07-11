@@ -290,7 +290,7 @@ const HomePage = () => {
                     <div className="absolute inset-0 bg-gradient-to-br from-accent/0 via-transparent to-accent/10 z-10 pointer-events-none"></div>
                     <img 
                       src={logo} 
-                      alt="A&O therapy LLC - Occupational Therapist & Consultant" 
+                      alt="A&O Therapy LLC - Occupational Therapist & Consultant"
                       className="w-full lg:h-[500px] object-cover object-top hover:scale-110 transition-transform duration-700"
                     />
                   </div>

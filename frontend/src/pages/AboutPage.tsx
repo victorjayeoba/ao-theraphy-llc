@@ -119,7 +119,7 @@ const AboutPage = () => {
     },
     {
       role: "Founder & Lead Therapist",
-      organization: "A&O therapy LLC",
+      organization: "A&O Therapy LLC",
       period: "2020 - Present",
       description: "Established private practice specializing in sensory processing and traumatic brain injury therapy. Created comprehensive Student Mentorship Program partnering with local universities to provide clinical training opportunities for OT students. Serves as Clinical and School-based occupational therapist for multiple school districts and Rehabilitation Centers in Illinois."
     },
@@ -239,7 +239,7 @@ const AboutPage = () => {
             Licensed Occupational Therapist
           </Badge>
           <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-6">
-            A&O therapy LLC
+            A&O Therapy LLC
           </h1>
           {/* <p className="text-lg text-muted-foreground mb-2 font-medium">
             PhD – Doctor of Philosophy in Education | MOT, OTR/L
@@ -264,7 +264,7 @@ const AboutPage = () => {
                     <div className="absolute inset-0 bg-gradient-to-br from-accent/0 via-transparent to-accent/10 z-10 pointer-events-none"></div>
                     <img 
                       src={logo} 
-                      alt="A&O therapy LLC - Occupational Therapist & Consultant" 
+                      alt="A&O Therapy LLC - Occupational Therapist & Consultant" 
                       className="w-full lg:h-[500px] object-cover object-top hover:scale-110 transition-transform duration-700"
                     />
                   </div>
@@ -331,7 +331,7 @@ const AboutPage = () => {
               <div className="h-1 w-20 bg-accent rounded-full"></div>
             </div>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              The path that led me to establish A&O therapy and my mission to empower neurodiverse communities
+              The path that led me to establish A&O Therapy and my mission to empower neurodiverse communities
             </p>
           </div>
 
@@ -386,7 +386,7 @@ const AboutPage = () => {
                   <CardContent className="p-6 pt-8">
                     <h3 className="text-xl font-bold text-foreground mb-4 text-center">Creating A&O Therapy</h3>
                     <p className="text-muted-foreground text-sm leading-relaxed">
-                      In 2020, I founded A&O therapy LLC with a vision to provide individualized, client-centered and family-centered care that truly honors each individual's journey. My approach emphasizes effective collaboration, positive connections, evidence-based practices, and the fundamental belief that every individual has tremendous potential waiting to be unlocked.
+                      In 2020, I founded A&O Therapy LLC with a vision to provide individualized, client-centered and family-centered care that truly honors each individual's journey. My approach emphasizes effective collaboration, positive connections, evidence-based practices, and the fundamental belief that every individual has tremendous potential waiting to be unlocked.
                     </p>
                   </CardContent>
                 </Card>

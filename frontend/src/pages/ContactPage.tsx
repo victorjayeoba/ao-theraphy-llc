@@ -93,14 +93,14 @@ const ContactPage = () => {
       title: "Phone",
       details: "(630) 394-0632",
       description: "Call during business hours",
-      action: "tel:555-123-4567"
+      action: "tel:630-394-0632"
     },
     {
       icon: Mail,
       title: "Email", 
-      details: "info@aandotherapy.com",
+      details: "info@aotherapyllc.com",
       description: "We respond within 24 hours",
-      action: "mailto:info@aandotherapy.com"
+      action: "mailto:info@aotherapyllc.com"
     },
     {
       icon: MapPin,

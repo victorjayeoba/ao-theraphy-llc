@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Mail, Phone, MapPin, Heart, Facebook, Instagram, Twitter, MessageCircle } from "lucide-react";
+import { Mail, Phone, MapPin, Heart } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -9,7 +9,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="space-y-4">
-            <h3 className="text-xl font-bold">A&O therapy LLC</h3>
+            <h3 className="text-xl font-bold">A&O Therapy LLC</h3>
             <p className="text-primary-foreground/80 leading-relaxed">
               Empowering neurodiverse lives through specialized sensory processing and traumatic brain injury therapy.
             </p>
@@ -64,52 +64,16 @@ const Footer = () => {
                 <Phone size={16} />
                 <span>(630) 394-0632</span>
               </a>
-              <a 
-                href="mailto:info@aandotherapy.com"
+              <a
+                href="mailto:info@aotherapyllc.com"
                 className="flex items-center space-x-3 text-primary-foreground/80 hover:text-accent transition-colors"
               >
                 <Mail size={16} />
-                <span>info@aandotherapy.com</span>
+                <span>info@aotherapyllc.com</span>
               </a>
               <div className="flex items-start space-x-3 text-primary-foreground/80">
                 <MapPin size={16} className="mt-1 flex-shrink-0" />
                 <span>Illinois licensed OT<br />Virtual & In-Person Sessions</span>
-              </div>
-
-              {/* Social Media Links */}
-              <div className="flex space-x-4 pt-4">
-                <a 
-                  href="https://facebook.com/aandotherapy" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-primary-foreground/80 hover:text-accent transition-colors"
-                >
-                  <Facebook size={20} />
-                </a>
-                <a 
-                  href="https://instagram.com/aandotherapy" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-primary-foreground/80 hover:text-accent transition-colors"
-                >
-                  <Instagram size={20} />
-                </a>
-                <a 
-                  href="https://wa.me/16303940632" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-primary-foreground/80 hover:text-accent transition-colors"
-                >
-                  <MessageCircle size={20} />
-                </a>
-                <a 
-                  href="https://twitter.com/aandotherapy" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-primary-foreground/80 hover:text-accent transition-colors"
-                >
-                  <Twitter size={20} />
-                </a>
               </div>
             </div>
           </div>
@@ -119,7 +83,7 @@ const Footer = () => {
         <div className="border-t border-primary-foreground/20 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-primary-foreground/60 text-sm">
-              © 2025 A&O therapy LLC. All rights reserved.
+              © 2025 A&O Therapy LLC. All rights reserved.
             </p>
             <div className="flex space-x-6 text-sm">
               <Link to="/privacy-policy" className="text-primary-foreground/60 hover:text-accent transition-colors">
