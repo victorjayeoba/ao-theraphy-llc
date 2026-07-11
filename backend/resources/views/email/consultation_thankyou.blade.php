@@ -126,7 +126,7 @@
                     </tr>
                     @endif
                 </table>
-                <a href="{{ url('https://ao-therapy-llc.netlify.app') }}" class="cta-button">Visit A and O Therapy</a>
+                <a href="https://www.aotherapyllc.com" class="cta-button">Visit A&O Therapy</a>
             </div>
             <div class="email-footer">
                 If you have any questions, feel free to reply to this email.<br>

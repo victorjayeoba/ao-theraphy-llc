@@ -128,7 +128,7 @@
                         <td class="value">{{ $support->message ?? 'N/A' }}</td>
                     </tr>
                 </table>
-                <a href="https://ao-therapy-llc.netlify.app" class="cta-button">Visit A and O Therapy</a>
+                <a href="https://www.aotherapyllc.com" class="cta-button">Visit A&O Therapy</a>
             </div>
             <div class="email-footer">
                 You received this email because a visitor submitted a support request on the A&O Therapy website.<br>
