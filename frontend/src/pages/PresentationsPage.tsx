@@ -72,20 +72,14 @@ const PresentationsPage = () => {
   const pastPresentations = [
     {
       title: "Neurodiverse-Friendly Therapy Approaches",
-      event: "Illinois Occupational Therapy Conference 2023",
-      date: "November 2023",
       type: "Conference Presentation"
     },
     {
       title: "Sensory Processing Across the Lifespan",
-      event: "Midwest Therapy Summit",
-      date: "September 2023", 
       type: "Keynote Address"
     },
     {
       title: "Family Engagement in TBI Recovery",
-      event: "Brain Injury Association Workshop",
-      date: "June 2023",
       type: "Workshop Facilitator"
     }
   ];
@@ -254,10 +248,8 @@ const PresentationsPage = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold text-foreground">{presentation.title}</h3>
-                      <p className="text-muted-foreground text-sm">{presentation.event}</p>
                       <div className="flex items-center gap-2 mt-2">
                         <Badge variant="outline" className="text-xs">{presentation.type}</Badge>
-                        <span className="text-xs text-muted-foreground">{presentation.date}</span>
                       </div>
                     </div>
                   </div>

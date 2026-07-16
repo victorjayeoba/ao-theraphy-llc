@@ -5,10 +5,6 @@ import ProductCard from "@/components/ProductCard";
 import { useQuery } from "@tanstack/react-query";
 import NotFound from "@/assets/undraw_file-search_cbur.svg";
 import { Search, ChevronLeft, ChevronRight } from "lucide-react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/navigation";
 
 
 const ShopPage = () => {
@@ -224,42 +220,19 @@ const ShopPage = () => {
 
       {/* Products Grid */}
       {isLoading ? (
-        isMobile ? (
-          <div className="mb-12 py-8">
-            <Swiper
-              modules={[Navigation]}
-              spaceBetween={10}
-              slidesPerView={1}
-              navigation
-              className="products-swiper"
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-12 py-8">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div
+              key={i}
+              className="animate-pulse space-y-4 p-4 rounded-lg shadow-sm bg-white dark:bg-gray-800"
             >
-              {Array.from({ length: 8 }).map((_, i) => (
-                <SwiperSlide key={i}>
-                  <div className="animate-pulse space-y-4 p-4 rounded-lg shadow-sm bg-white dark:bg-gray-800">
-                    <div className="h-48 bg-gray-200 dark:bg-gray-700 rounded-md" />
-                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
-                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2" />
-                    <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-full mt-2" />
-                  </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-12 py-8">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div
-                key={i}
-                className="animate-pulse space-y-4 p-4 rounded-lg shadow-sm bg-white dark:bg-gray-800"
-              >
-                <div className="h-48 bg-gray-200 dark:bg-gray-700 rounded-md" />
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2" />
-                <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-full mt-2" />
-              </div>
-            ))}
-          </div>
-        )
+              <div className="h-48 bg-gray-200 dark:bg-gray-700 rounded-md" />
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2" />
+              <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-full mt-2" />
+            </div>
+          ))}
+        </div>
        ) : error ? (
         <div className="py-20 text-center text-red-500">Error loading products: {error.message}</div>
       ) : (
@@ -275,24 +248,6 @@ const ShopPage = () => {
                   Clear Filters
                 </Button>
               </div>
-            </div>
-          ) : isMobile ? (
-            <div className="mb-12">
-              <Swiper
-                modules={[Navigation]}
-                spaceBetween={10}
-                slidesPerView={1}
-                navigation
-                className="products-swiper"
-              >
-                {filteredProducts.map((product, index) => (
-                  <SwiperSlide key={product.id}>
-                    <div data-aos="fade-up" data-aos-delay={`${(index % 4) * 100}`}>
-                      <ProductCard {...(product as any)} />
-                    </div>
-                  </SwiperSlide>
-                ))}
-              </Swiper>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-12">

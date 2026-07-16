@@ -67,7 +67,7 @@ const AboutPage = () => {
   const credentials = [
     {
       img:educationImg,
-      title: "PhD – Doctor of Philosophy in Educational Leadership",
+      title: "Doctor of Philosophy",
       institution: "National University, San Diego, CA", // Update when details provided
       certifiedBy: "American Occupational Therapy Association",
       year: "2024",

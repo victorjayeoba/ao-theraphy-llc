@@ -53,15 +53,37 @@ const ConsultationPage = () => {
 
   const { toast } = useToast();
 
-  const timeSlots = [
+  // Availability by day of week:
+  //   Mon–Fri: 5:00 PM – 8:00 PM
+  //   Saturday: 9:00 AM – 5:00 PM
+  //   Sunday:   2:00 PM – 6:00 PM
+  const WEEKDAY_SLOTS = ["5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM"];
+  const SATURDAY_SLOTS = [
     "9:00 AM",
     "10:00 AM",
     "11:00 AM",
+    "12:00 PM",
     "1:00 PM",
     "2:00 PM",
     "3:00 PM",
     "4:00 PM",
+    "5:00 PM",
   ];
+  const SUNDAY_SLOTS = ["2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM"];
+
+  // Return the available time slots for the chosen date's day of week.
+  const getSlotsForDate = (dateStr: string): string[] => {
+    if (!dateStr) return [];
+    // Parse as a local date to avoid timezone shifting the day.
+    const [year, month, day] = dateStr.split("-").map(Number);
+    if (!year || !month || !day) return [];
+    const dayOfWeek = new Date(year, month - 1, day).getDay(); // 0=Sun ... 6=Sat
+    if (dayOfWeek === 0) return SUNDAY_SLOTS;
+    if (dayOfWeek === 6) return SATURDAY_SLOTS;
+    return WEEKDAY_SLOTS;
+  };
+
+  const timeSlots = getSlotsForDate(preferredDate);
 
   const submitForm = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -590,8 +612,13 @@ const ConsultationPage = () => {
                       type="date"
                       value={preferredDate}
                       onChange={(e: any) => {
-                        setPreferredDate(e.target.value);
+                        const newDate = e.target.value;
+                        setPreferredDate(newDate);
                         setMissingFields((m) => m.filter((k) => k !== "preferredDate"));
+                        // Clear the chosen time if it isn't available on the new date's day.
+                        if (selectedTime && !getSlotsForDate(newDate).includes(selectedTime)) {
+                          setSelectedTime("");
+                        }
                       }}
                       className={isMissing("preferredDate") ? "border-destructive ring-1 ring-destructive" : ""}
                     />
@@ -601,29 +628,38 @@ const ConsultationPage = () => {
                     <label className="text-sm font-medium text-foreground mb-2 block">
                       Preferred Time <span className="text-destructive">*</span>
                     </label>
-                    <div
-                      className={`grid grid-cols-3 gap-2 ${
-                        isMissing("selectedTime") ? "rounded-md ring-1 ring-destructive p-2" : ""
-                      }`}
-                    >
-                      {timeSlots.map((time) => (
-                        <Badge
-                          key={time}
-                          variant={selectedTime === time ? "default" : "outline"}
-                          className={`cursor-pointer text-center py-2 transition-colors ${
-                            selectedTime === time
-                              ? "bg-primary text-primary-foreground"
-                              : "hover:bg-primary/10"
-                          }`}
-                          onClick={() => {
-                            setSelectedTime(time);
-                            setMissingFields((m) => m.filter((k) => k !== "selectedTime"));
-                          }}
-                        >
-                          {time}
-                        </Badge>
-                      ))}
-                    </div>
+                    <p className="text-xs text-muted-foreground mb-2">
+                      Availability: Mon–Fri 5:00–8:00 PM · Sat 9:00 AM–5:00 PM · Sun 2:00–6:00 PM
+                    </p>
+                    {!preferredDate ? (
+                      <p className="text-sm text-muted-foreground italic">
+                        Please choose a preferred date above to see available times.
+                      </p>
+                    ) : (
+                      <div
+                        className={`grid grid-cols-3 gap-2 ${
+                          isMissing("selectedTime") ? "rounded-md ring-1 ring-destructive p-2" : ""
+                        }`}
+                      >
+                        {timeSlots.map((time) => (
+                          <Badge
+                            key={time}
+                            variant={selectedTime === time ? "default" : "outline"}
+                            className={`cursor-pointer text-center py-2 transition-colors ${
+                              selectedTime === time
+                                ? "bg-primary text-primary-foreground"
+                                : "hover:bg-primary/10"
+                            }`}
+                            onClick={() => {
+                              setSelectedTime(time);
+                              setMissingFields((m) => m.filter((k) => k !== "selectedTime"));
+                            }}
+                          >
+                            {time}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   <div>
