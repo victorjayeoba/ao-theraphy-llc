@@ -77,7 +77,7 @@ const AboutPage = () => {
     {
       img:licenseImg,
       title: "",
-      institution: "Governors State University, IL",
+      institution: "",
       certifiedBy: "Illinois Occupational Therapy Association",
       year: "current",
       type: "Education"
