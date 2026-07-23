@@ -67,19 +67,19 @@ const AboutPage = () => {
   const credentials = [
     {
       img:educationImg,
-      title: "Doctor of Philosophy",
-      institution: "National University, San Diego, CA", // Update when details provided
+      title: "",
+      institution: "", // Update when details provided
       certifiedBy: "American Occupational Therapy Association",
-      year: "2024",
+      year: "current",
       type: "Education",
       highlight: true // Added highlight flag
     },
     {
       img:licenseImg,
-      title: "Masters of Occupational Therapy",
+      title: "",
       institution: "Governors State University, IL",
       certifiedBy: "Illinois Occupational Therapy Association",
-      year: "05/2011",
+      year: "current",
       type: "Education"
     },
     // {
@@ -114,10 +114,10 @@ const AboutPage = () => {
 
   const experience = [
     {
-      role: "Adjunct Professor / Fieldwork Coordinator / Lecturer",
+      role: "Adjunct Professor",
       organization: "Lewis University",
       period: "Current",
-      description: "Adjunct professor and fieldwork coordinator — lecturing and coordinating clinical fieldwork placements for occupational therapy students."
+      description: ""
     },
     {
       role: "Founder & Lead Therapist",

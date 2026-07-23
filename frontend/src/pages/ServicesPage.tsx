@@ -436,7 +436,7 @@ const ServicesPage = () => {
               </h2>
               <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
                 Our occupational therapy consultant specializes in a broad range
-                of conditions, providing holistic, individualized care for each.
+                of conditions, providing holistic, individualized care for each area of specialization.
               </p>
             </div>
 
