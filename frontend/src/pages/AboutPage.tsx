@@ -122,7 +122,7 @@ const AboutPage = () => {
     {
       role: "Founder & Lead Therapist",
       organization: "A&O Therapy LLC",
-      period: "2020 - Present",
+      period: "2025 - Present",
       description: "Established private practice specializing in sensory processing and traumatic brain injury therapy. Created comprehensive Student Mentorship Program partnering with local universities to provide clinical training opportunities for OT students. Serves as Clinical and School-based occupational therapist for multiple school districts and Rehabilitation Centers in Illinois."
     },
     {
