@@ -20,6 +20,9 @@ import student2 from "@/assets/gallery/student2.png";
 import student3 from "@/assets/gallery/student3.jpg";
 import student4 from "@/assets/gallery/student4.jpg";
 import withTheStudents from "@/assets/gallery/with_the_students.jpg";
+import rehabilitationTeam from "@/assets/gallery/RehabilitationTeam.jpg";
+import clinicalTrials from "@/assets/gallery/clinical-trails.jpg";
+import therapists from "@/assets/gallery/therapists.jpg";
 
 const galleryImages = [
   {
@@ -107,6 +110,21 @@ const galleryImages = [
     alt: "Dr. Ani with the LewisU graduate FW students at the Charitable Preschool",
     title: "Dr. Ani with the LewisU graduate FW students at the Charitable Preschool",
   },
+  {
+    src: rehabilitationTeam,
+    alt: "Dr. Ani with the Rehabilitation Team",
+    title: "Dr. Ani with the Rehabilitation Team",
+  },
+  {
+    src: clinicalTrials,
+    alt: "Clinical trials at the Rehabilitation Health Fitness Center with colleagues.",
+    title: "Clinical trials at the Rehabilitation Health Fitness Center with colleagues.",
+  },
+  {
+    src: therapists,
+    alt: "Physical & Occupational Therapists",
+    title: "Physical & Occupational Therapists",
+  },
 ];
 
 const TherapyGallery = () => {
@@ -158,7 +176,7 @@ const TherapyGallery = () => {
         </div>
 
         {/* Collage Style Gallery - Full Coverage Dense Layout */}
-        <div className="relative w-full h-[750px] md:h-[1000px] lg:h-[1650px]">
+        <div className="relative w-full h-[950px] md:h-[1300px] lg:h-[2100px]">
           {/* Row 1 - Top images */}
           <div 
             className="absolute left-0 top-0 w-[33%] h-[48%] z-10 p-1"
@@ -379,6 +397,58 @@ const TherapyGallery = () => {
               <img
                 src={galleryImages[15].src}
                 alt={galleryImages[15].alt}
+                className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
+              />
+            </div>
+          </div>
+
+          {/* Row 5 - Rehabilitation Team, Clinical Trials, Therapists */}
+          <div
+            className="absolute left-0 top-[130%] w-[32%] h-[24%] z-50 p-1"
+            data-aos="fade-right"
+            data-aos-delay="500"
+          >
+            <div
+              className="group relative overflow-hidden rounded-lg shadow-xl cursor-pointer h-full"
+              onClick={() => openImage(17)}
+            >
+              <img
+                src={galleryImages[17].src}
+                alt={galleryImages[17].alt}
+                className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
+              />
+            </div>
+          </div>
+
+          <div
+            className="absolute left-[34%] top-[130%] w-[32%] h-[24%] z-50 p-1"
+            data-aos="zoom-in"
+            data-aos-delay="550"
+          >
+            <div
+              className="group relative overflow-hidden rounded-lg shadow-xl cursor-pointer h-full"
+              onClick={() => openImage(18)}
+            >
+              <img
+                src={galleryImages[18].src}
+                alt={galleryImages[18].alt}
+                className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
+              />
+            </div>
+          </div>
+
+          <div
+            className="absolute right-0 top-[130%] w-[32%] h-[24%] z-50 p-1"
+            data-aos="fade-left"
+            data-aos-delay="500"
+          >
+            <div
+              className="group relative overflow-hidden rounded-lg shadow-xl cursor-pointer h-full"
+              onClick={() => openImage(19)}
+            >
+              <img
+                src={galleryImages[19].src}
+                alt={galleryImages[19].alt}
                 className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
               />
             </div>
