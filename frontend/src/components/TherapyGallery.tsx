@@ -113,12 +113,12 @@ const galleryImages = [
   {
     src: rehabilitationTeam,
     alt: "Dr. Ani with the Rehabilitation Team",
-    title: "Dr. Ani with the Rehabilitation Team",
+    title: "Rehabilitation Team",
   },
   {
     src: clinicalTrials,
     alt: "Clinical trials at the Rehabilitation Health Fitness Center with colleagues.",
-    title: "Clinical trials at the Rehabilitation Health Fitness Center with colleagues.",
+    title: "Clinical Trials",
   },
   {
     src: therapists,
@@ -496,9 +496,11 @@ const TherapyGallery = () => {
                   <h3 className="text-white font-semibold text-lg">
                     {galleryImages[selectedImage].title}
                   </h3>
-                  <p className="text-white/70 text-sm">
-                    {galleryImages[selectedImage].alt}
-                  </p>
+                  {galleryImages[selectedImage].alt !== galleryImages[selectedImage].title && (
+                    <p className="text-white/70 text-sm">
+                      {galleryImages[selectedImage].alt}
+                    </p>
+                  )}
                 </div>
               </div>
             )}
