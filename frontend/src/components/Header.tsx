@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Phone, ShoppingCart, ChevronDown } from "lucide-react";
+import { Menu, X, Phone, ShoppingCart, ChevronDown, User, LogOut } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 import { Badge } from "@/components/ui/badge";
 import logo from "@/assets/logo.png";
 
@@ -16,6 +17,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const { totalItems, openCart } = useCart();
+  const { user, logout } = useAuth();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -88,11 +90,12 @@ const Header = () => {
             </a>
             
             {/* Cart Button */}
-            {/* <Button
+            <Button
               variant="ghost"
               size="icon"
               className="relative"
               onClick={openCart}
+              aria-label={`Cart, ${totalItems} item${totalItems === 1 ? "" : "s"}`}
             >
               <ShoppingCart size={20} />
               {totalItems > 0 && (
@@ -100,7 +103,33 @@ const Header = () => {
                   {totalItems}
                 </Badge>
               )}
-            </Button> */}
+            </Button>
+
+            {/* Account */}
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger className="nav-link flex items-center gap-1 outline-none">
+                  <User size={18} />
+                  <span className="max-w-[100px] truncate">{user.name.split(" ")[0]}</span>
+                  <ChevronDown className="w-4 h-4" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48 bg-background">
+                  <DropdownMenuItem disabled className="text-xs opacity-70">
+                    {user.email}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={logout} className="cursor-pointer">
+                    <LogOut size={14} className="mr-2" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link to="/auth" className="nav-link flex items-center gap-1">
+                <User size={18} />
+                Sign In
+              </Link>
+            )}
+
             
             <Button asChild className="btn-hero">
               <Link to="/consultation">Book Consultation</Link>
@@ -156,7 +185,7 @@ const Header = () => {
                   <Phone size={16} />
                   <span>(555) 123-4567)</span>
                 </a>
-                {/* <Button
+                <Button
                   variant="outline"
                   className="w-full mt-3 flex items-center justify-center gap-2"
                   onClick={() => {
@@ -166,7 +195,33 @@ const Header = () => {
                 >
                   <ShoppingCart size={16} />
                   Cart {totalItems > 0 && `(${totalItems})`}
-                </Button> */}
+                </Button>
+
+                {user ? (
+                  <Button
+                    variant="outline"
+                    className="w-full mt-3 flex items-center justify-center gap-2"
+                    onClick={() => {
+                      logout();
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    <LogOut size={16} />
+                    Sign Out ({user.name.split(" ")[0]})
+                  </Button>
+                ) : (
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="w-full mt-3 flex items-center justify-center gap-2"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Link to="/auth">
+                      <User size={16} />
+                      Sign In
+                    </Link>
+                  </Button>
+                )}
                 <Button asChild className="btn-hero w-full mt-3" onClick={() => setIsMenuOpen(false)}>
                   <Link to="/consultation">Book Consultation</Link>
                   

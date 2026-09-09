@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingCart, Star } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useNavigate } from "react-router-dom";
+import StarRating from "@/components/StarRating";
+import { ratingFor } from "@/lib/ratings";
 
 
 interface ProductCardProps {
@@ -19,16 +21,17 @@ interface ProductCardProps {
   featured?: boolean;
 }
 
-const ProductCard = ({ 
-  id, 
+const ProductCard = ({
+  id,
   slug,
-  name, 
-  description, 
-  price, 
-  picture, 
-  category, 
-  reviewCount, 
-  featured = false 
+  name,
+  description,
+  price,
+  picture,
+  category,
+  rating,
+  reviewCount,
+  featured = false
 }: ProductCardProps) => {
   const { addItem } = useCart();
   const navigate = useNavigate();
@@ -65,6 +68,13 @@ const ProductCard = ({
   )}`;
 
   const imageUrl = resolveImageUrl(picture) ?? placeholder;
+  // Absolute URL, so the cart and checkout can render the same image.
+  const displayImage = imageUrl.startsWith("http") || imageUrl.startsWith("data:")
+    ? imageUrl
+    : `${baseUrl}${imageUrl}`;
+
+  // Use the API's rating when it sends one, otherwise fall back to the demo value.
+  const stars = rating ? { rating, reviewCount: reviewCount ?? 0 } : ratingFor(slug ?? id);
 
   // Build a product object from props so we can pass it via navigation state
   const product = {
@@ -79,18 +89,17 @@ const ProductCard = ({
     featured,
   };
 
-  console.log(slug);
+  const handleAddToCart = () => {
+    addItem({ id, name, price: Number(price), image: displayImage });
+  };
 
-  // const handleAddToCart = () => {
-  //   addItem({ id, name, price, picture });
-  // };
   return (
     <div data-aos="fade-up" data-aos-duration="700" className={`therapy-card h-full ${featured ? 'ring-2 ring-accent ring-offset-2' : ''}`}>
       <div className="flex flex-col h-full">
         {/* Image */}
         <div className="relative mb-4">
-          <img 
-            src={imageUrl.startsWith('http') ? imageUrl : `${baseUrl}${imageUrl}`}
+          <img
+            src={displayImage}
             alt={name}
             className="w-full h-48 object-cover rounded-lg"
           />
@@ -116,41 +125,34 @@ const ProductCard = ({
           </p>
           
           {/* Rating */}
-          {/* <div className="flex items-center space-x-2 mb-4">
-            <div className="flex items-center">
-              {[...Array(5)].map((_, i) => (
-                <Star 
-                  key={i} 
-                  size={14} 
-                  className={`${
-                    i < Math.floor(rating) 
-                      ? 'text-yellow-400 fill-current' 
-                      : 'text-gray-300'
-                  }`} 
-                />
-              ))}
-            </div>
-            <span className="text-xs text-muted-foreground">
-              {rating} ({reviewCount} reviews)
-            </span>
-          </div> */}
+          <StarRating
+            rating={stars.rating}
+            reviewCount={stars.reviewCount}
+            className="mb-4"
+          />
         </div>
 
         {/* Price & Action */}
-        <div className="flex items-center justify-between">
-          <div>
-            {/* <span>$</span> */}
-            <span className="text-xl font-bold text-foreground">${price}</span>
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-xl font-bold text-foreground">${price}</span>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate(`/products/${slug}`, { state: { product } })}
+            >
+              Details
+            </Button>
+            <Button
+              className="btn-accent"
+              size="sm"
+              onClick={handleAddToCart}
+              aria-label={`Add ${name} to cart`}
+            >
+              <ShoppingCart size={16} className="mr-1" />
+              Add
+            </Button>
           </div>
-          <Button
-            className="btn-accent"
-            size="sm"
-            onClick={() => navigate(`/products/${slug}`, { state: { product } })}
-          >
-            View Details
-          </Button>
-
-          
         </div>
       </div>
     </div>

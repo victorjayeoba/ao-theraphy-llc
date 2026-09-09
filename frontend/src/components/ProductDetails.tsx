@@ -1,6 +1,11 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
+import { useCart } from '@/context/CartContext';
+import { Button } from '@/components/ui/button';
+import StarRating from '@/components/StarRating';
+import { ratingFor } from '@/lib/ratings';
+import { Minus, Plus, ShoppingCart } from 'lucide-react';
 
 interface Product {
 	id: string;
@@ -20,10 +25,13 @@ const ProductDetails: React.FC = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 
+	const { addItem } = useCart();
+
 	const initial: Product | null = (location.state as any)?.product ?? null;
 	const [product, setProduct] = useState<Product | null>(initial);
 	const [loading, setLoading] = useState<boolean>(!initial && !!id);
 	const [error, setError] = useState<string | null>(null);
+	const [quantity, setQuantity] = useState(1);
 
 	useEffect(() => {
 		if (product || !id) {
@@ -60,6 +68,22 @@ const ProductDetails: React.FC = () => {
 	if (loading) return <div>Loading product...</div>;
 	if (error) return <div>Error loading product: {error}</div>;
 	if (!product) return <div>Product not found.</div>;
+
+	const title = product.title ?? product.name ?? 'Product';
+	const stars = product.rating
+		? { rating: Number(product.rating), reviewCount: Number(product.reviewCount ?? 0) }
+		: ratingFor(product.slug ?? product.id ?? title);
+
+	const handleAddToCart = () =>
+		addItem(
+			{
+				id: String(product.id),
+				name: title,
+				price: Number(product.price) || 0,
+				image: product.picture ?? '',
+			},
+			quantity
+		);
 	return (
 		<div className="container mx-auto py-[80px] px-4 lg:px-8 bg-white/80 dark:bg-slate-900 rounded-lg shadow-sm">
 			<div className="mb-4">
@@ -84,8 +108,10 @@ const ProductDetails: React.FC = () => {
 				<div className="flex flex-col justify-between space-y-6">
 					<div>
                         <h1 className="text-2xl font-semibold text-foreground mb-2">
-						{product.title ?? product.name}
+						{title}
 					</h1>
+
+					<StarRating rating={stars.rating} reviewCount={stars.reviewCount} size={16} />
 
                     <div className="prose max-w-none my-6 text-muted-foreground">
 						{product.description ?? 'No description available.'}
@@ -118,25 +144,40 @@ const ProductDetails: React.FC = () => {
 					
                     </div>
 
-					{/* <div className="flex items-center space-x-3">
-						<button
-							className="px-4 py-2 bg-accent text-white rounded-md hover:bg-accent/90 disabled:opacity-50"
-							onClick={() => {
-								// TODO: call real add-to-cart handler (context/Redux)
-								// eslint-disable-next-line no-alert
-								alert('Add to cart clicked (implement handler)');
-							}}
-						>
-							Add to cart
-						</button>
+					<div className="flex flex-wrap items-center gap-4">
+						<div className="flex items-center gap-2">
+							<Button
+								variant="outline"
+								size="icon"
+								className="h-9 w-9"
+								aria-label="Decrease quantity"
+								onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+							>
+								<Minus className="w-4 h-4" />
+							</Button>
+							<span className="w-10 text-center font-medium" aria-live="polite">
+								{quantity}
+							</span>
+							<Button
+								variant="outline"
+								size="icon"
+								className="h-9 w-9"
+								aria-label="Increase quantity"
+								onClick={() => setQuantity((q) => q + 1)}
+							>
+								<Plus className="w-4 h-4" />
+							</Button>
+						</div>
 
-						<button
-							className="px-4 py-2 border rounded-md text-sm text-foreground hover:bg-gray-50"
-							onClick={() => navigate('/cart')}
-						>
-							Go to cart
-						</button>
-					</div> */}
+						<Button className="btn-accent flex-1 min-w-[160px]" onClick={handleAddToCart}>
+							<ShoppingCart className="w-4 h-4 mr-2" />
+							Add to Cart
+						</Button>
+
+						<Button variant="outline" onClick={() => navigate('/checkout')}>
+							Checkout
+						</Button>
+					</div>
 
 					{/* Terms & Conditions */}
 					

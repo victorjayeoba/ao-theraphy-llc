@@ -8,6 +8,7 @@ import {
   SheetFooter,
 } from "@/components/ui/sheet";
 import { Minus, Plus, X, ShoppingBag } from "lucide-react";
+import { Link } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 
@@ -30,7 +31,7 @@ const CartSidebar = () => {
             <h3 className="text-lg font-semibold text-foreground mb-2">Your cart is empty</h3>
             <p className="text-muted-foreground mb-6">Add some therapeutic tools to get started</p>
             <Button asChild onClick={closeCart}>
-              <a href="/shop">Browse Products</a>
+              <Link to="/shop">Browse Products</Link>
             </Button>
           </div>
         ) : (
@@ -94,11 +95,11 @@ const CartSidebar = () => {
                   <span>${totalPrice.toFixed(2)}</span>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" onClick={clearCart} className="flex-1">
+                  <Button variant="outline" onClick={() => clearCart()} className="flex-1">
                     Clear Cart
                   </Button>
-                  <Button className="flex-1 btn-accent" asChild>
-                    <a href="/consultation">Checkout</a>
+                  <Button className="flex-1 btn-accent" asChild onClick={closeCart}>
+                    <Link to="/checkout">Checkout</Link>
                   </Button>
                 </div>
               </div>
