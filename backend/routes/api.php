@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\AchievementController;
+use App\Http\Controllers\OrderController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -39,3 +40,6 @@ Route::get('/consultation/{id}', [ConsultationController::class, 'showConsultati
 Route::get('/sessions', [SessionController::class, 'showSessionsAPI']);
 
 Route::get('/achievements', [AchievementController::class, 'apiIndex']);
+
+// Place a shop order (no payment gateway yet)
+Route::post('/orders', [OrderController::class, 'store'])->middleware('throttle:10,1');

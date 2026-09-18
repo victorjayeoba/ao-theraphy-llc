@@ -123,6 +123,9 @@
                 <a href="{{ route('products.index') }}" class="sidebar-link {{ request()->routeIs('products.*') ? 'active' : '' }}">
                     <i class="fa-solid fa-box"></i> Products
                 </a>
+                <a href="{{ route('orders.index') }}" class="sidebar-link {{ request()->routeIs('orders.*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-receipt"></i> Orders
+                </a>
                 <a href="{{ route('consultations.index') }}" class="sidebar-link {{ request()->routeIs('consultations.*') ? 'active' : '' }}">
                     <i class="fa-solid fa-user-md"></i> Consultation
                 </a>

@@ -33,11 +33,13 @@ class ProductController extends Controller
             'category'    => 'nullable|string|max:255',
             'description' => 'required|string',
             'price'       => 'required|numeric|min:0',
+            'rating'      => 'nullable|numeric|between:0,5',
+            'review_count'=> 'nullable|integer|min:0',
             'picture'     => 'required|image|max:1024', // 1MB Max
         ]);
         // dd('Validation passed!');
 
-        $data = $request->only(['name', 'category', 'description', 'price']);
+        $data = $request->only(['name', 'category', 'description', 'price', 'rating', 'review_count']);
 
         // ✅ Store image with full URL
         if ($request->hasFile('picture')) {
@@ -67,11 +69,13 @@ class ProductController extends Controller
             'category'    => 'nullable|string|max:255',
             'description' => 'required|string',
             'price'       => 'required|numeric|min:0',
+            'rating'      => 'nullable|numeric|between:0,5',
+            'review_count'=> 'nullable|integer|min:0',
             'picture'     => 'nullable|image|max:1024',
         ]);
 
         $product = Products::findOrFail($id);
-        $data = $request->only(['name', 'category', 'description', 'price']);
+        $data = $request->only(['name', 'category', 'description', 'price', 'rating', 'review_count']);
 
         if ($request->hasFile('picture')) {
             $path = $request->file('picture')->store('products', 'public');

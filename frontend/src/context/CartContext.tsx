@@ -57,23 +57,17 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     // than at each call site) so the same product always lands in one cart line —
     // otherwise 23 and "23" become two rows with the same React key.
     const item = { ...rawItem, id: String(rawItem.id) };
-    setItems((prev) => {
-      const existing = prev.find((i) => i.id === item.id);
-      if (existing) {
-        toast({
-          title: "Updated cart",
-          description: `${item.name} quantity increased`,
-        });
-        return prev.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + qty } : i
-        );
-      }
-      toast({
-        title: "Added to cart",
-        description: `${item.name} has been added to your cart`,
-      });
-      return [...prev, { ...item, quantity: qty }];
-    });
+    // Side effects stay out of the updater: React may run it twice (StrictMode).
+    setItems((prev) =>
+      prev.some((i) => i.id === item.id)
+        ? prev.map((i) => (i.id === item.id ? { ...i, quantity: i.quantity + qty } : i))
+        : [...prev, { ...item, quantity: qty }]
+    );
+    toast(
+      items.some((i) => i.id === item.id)
+        ? { title: "Updated cart", description: `${item.name} quantity increased` }
+        : { title: "Added to cart", description: `${item.name} has been added to your cart` }
+    );
     setIsOpen(true);
   };
 

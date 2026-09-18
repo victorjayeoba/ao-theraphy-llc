@@ -16,18 +16,15 @@ import {
   formatExpiry,
   validExpiry,
   validCvc,
-  orderNumber,
   FREE_SHIPPING_OVER,
 } from "@/lib/payment";
-import { CreditCard, Lock, ShoppingBag, CheckCircle2, Loader2, Info } from "lucide-react";
+import { CreditCard, Lock, ShoppingBag, CheckCircle2, Loader2, Info, AlertCircle } from "lucide-react";
 
 interface Placed {
   number: string;
   total: number;
   email: string;
 }
-
-const ORDERS_KEY = "ao-demo-orders";
 
 const CheckoutPage = () => {
   const { items, totalPrice, clearCart } = useCart();
@@ -47,6 +44,7 @@ const CheckoutPage = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [processing, setProcessing] = useState(false);
   const [placed, setPlaced] = useState<Placed | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   // Prefill from the signed-in account, without clobbering anything already typed.
   useEffect(() => {
@@ -97,34 +95,37 @@ const CheckoutPage = () => {
     if (!validate()) return;
 
     setProcessing(true);
-    // Simulated authorisation delay so the UI reads like a real gateway round-trip.
-    await new Promise((r) => setTimeout(r, 1400));
-
-    const order = {
-      number: orderNumber(),
-      placedAt: new Date().toISOString(),
-      email: form.email.trim(),
-      name: form.name.trim(),
-      // Card details are deliberately NOT stored — only the last 4, as a receipt would.
-      cardLast4: form.card.replace(/\D/g, "").slice(-4),
-      items,
-      totals,
-    };
-
+    setSubmitError(null);
     try {
-      const raw = localStorage.getItem(ORDERS_KEY);
-      const prev = raw ? JSON.parse(raw) : [];
-      localStorage.setItem(
-        ORDERS_KEY,
-        JSON.stringify([...(Array.isArray(prev) ? prev : []), order])
+      // No gateway yet: the server records the order (pricing it from the DB) and it
+      // shows up in the admin dashboard. Card details never leave the page — only the last 4.
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/orders`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          email: form.email.trim(),
+          name: form.name.trim(),
+          address: form.address.trim(),
+          city: form.city.trim(),
+          zip: form.zip.trim(),
+          card_last4: form.card.replace(/\D/g, "").slice(-4),
+          items: items.map((i) => ({ id: Number(i.id), quantity: i.quantity })),
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.message || `Order failed (${res.status}).`);
+      setPlaced({ number: data.number, total: Number(data.total), email: data.email });
+      clearCart(true);
+      window.scrollTo(0, 0);
+    } catch (err) {
+      setSubmitError(
+        err instanceof TypeError
+          ? "We couldn't reach the store. Check your connection and try again."
+          : (err as Error).message
       );
-    } catch {
-      /* storage blocked: the confirmation below is still shown */
+    } finally {
+      setProcessing(false);
     }
-
-    setProcessing(false);
-    setPlaced({ number: order.number, total: totals.total, email: order.email });
-    clearCart(true);
   };
 
   if (placed) {
@@ -144,7 +145,7 @@ const CheckoutPage = () => {
                 <span className="font-mono font-semibold">{placed.number}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Amount paid</span>
+                <span className="text-muted-foreground">Order total</span>
                 <span className="font-semibold">${placed.total.toFixed(2)}</span>
               </div>
             </CardContent>
@@ -152,7 +153,7 @@ const CheckoutPage = () => {
           <Alert className="mb-8 text-left">
             <Info className="h-4 w-4" />
             <AlertDescription className="text-xs">
-              Demo order &mdash; no payment was taken and nothing will ship.
+              Online payment isn&apos;t live yet, so no card was charged.
             </AlertDescription>
           </Alert>
           <div className="flex gap-3 justify-center">
@@ -288,6 +289,13 @@ const CheckoutPage = () => {
                 </div>
               </CardContent>
             </Card>
+
+            {submitError && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{submitError}</AlertDescription>
+              </Alert>
+            )}
 
             <Button
               type="submit"

@@ -38,6 +38,9 @@ Route::middleware(['auth'])->group(function () {
     Route::match(['put', 'patch'], '/products/{id}', [ProductController::class, 'update'])->name('products.update');
     Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
 
+    // Shop orders
+    Route::get('/orders', [App\Http\Controllers\OrderController::class, 'index'])->name('orders.index');
+
     // Consultations Management
     Route::get('/consultations', [App\Http\Controllers\ConsultationController::class, 'index'])->name('consultations.index');
     Route::get('/consultations/{id}', [App\Http\Controllers\ConsultationController::class, 'show'])->name('consultations.show');

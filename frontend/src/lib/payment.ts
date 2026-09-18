@@ -83,9 +83,3 @@ export const validExpiry = (value: string, now = new Date()): boolean => {
 
 export const validCvc = (value: string, brand: CardBrand = "unknown"): boolean =>
   new RegExp(`^\\d{${brand === "amex" ? 4 : 3}}$`).test(value.trim());
-
-export const orderNumber = (): string =>
-  `AO-${Date.now().toString(36).toUpperCase()}-${Math.random()
-    .toString(36)
-    .slice(2, 6)
-    .toUpperCase()}`;

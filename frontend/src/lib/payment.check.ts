@@ -8,7 +8,6 @@ import {
   formatExpiry,
   validExpiry,
   validCvc,
-  orderNumber,
 } from "./payment.ts";
 
 // --- Luhn: these are the standard gateway test numbers, all valid.
@@ -67,6 +66,5 @@ const odd = calculateTotals(19.99 * 3);
 assert.equal(odd.total, Number(odd.total.toFixed(2)), `float leak: ${odd.total}`);
 
 // --- Order numbers are unique
-assert.notEqual(orderNumber(), orderNumber());
 
 console.log("payment ok — luhn, brands, expiry, cvc, totals all pass");
