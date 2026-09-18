@@ -1,27 +1,18 @@
-// Demo ratings. No backend column, no DB migration: the rating is derived from the
-// product key, so it is stable across reloads and identical on every device.
-// Swap `ratingFor` for a real API field when reviews actually exist.
-
-// FNV-1a: tiny, deterministic, good enough spread for a display value.
-const hash = (s: string): number => {
-  let h = 0x811c9dc5;
-  for (let i = 0; i < s.length; i++) {
-    h ^= s.charCodeAt(i);
-    h = Math.imul(h, 0x01000193);
-  }
-  return h >>> 0;
-};
+// Ratings come from the API (`rating` / `review_count`), loaded from Amazon by
+// backend/database/seeders/AmazonRatingsSeeder.php and editable in the admin dashboard.
+// A product without a rating shows no stars.
 
 export interface Rating {
   rating: number;
   reviewCount: number;
 }
 
-/** Stable pseudo-rating in the 4.5 - 5.0 range, plus a plausible review count. */
-export const ratingFor = (key: string | number): Rating => {
-  const h = hash(String(key));
-  return {
-    rating: Number((4.5 + (h % 6) / 10).toFixed(1)),
-    reviewCount: 18 + ((h >>> 8) % 265),
-  };
-};
+/** The product's rating, or null when it has none. Laravel may send decimals as strings. */
+export const productRating = (p: {
+  rating?: number | string | null;
+  review_count?: number | string | null;
+  reviewCount?: number | string | null;
+}): Rating | null =>
+  p.rating != null && p.rating !== ""
+    ? { rating: Number(p.rating), reviewCount: Number(p.review_count ?? p.reviewCount ?? 0) }
+    : null;

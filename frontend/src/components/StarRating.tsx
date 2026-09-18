@@ -42,7 +42,7 @@ const StarRating = ({ rating, reviewCount, size = 14, className = "" }: StarRati
       </div>
       <span className="text-xs text-muted-foreground whitespace-nowrap">
         {clamped.toFixed(1)}
-        {reviewCount !== undefined && ` (${reviewCount})`}
+        {reviewCount !== undefined && ` (${reviewCount.toLocaleString()} on Amazon)`}
       </span>
     </div>
   );

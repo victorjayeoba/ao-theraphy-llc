@@ -4,7 +4,7 @@ import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useNavigate } from "react-router-dom";
 import StarRating from "@/components/StarRating";
-import { ratingFor } from "@/lib/ratings";
+import { productRating } from "@/lib/ratings";
 
 
 interface ProductCardProps {
@@ -15,9 +15,10 @@ interface ProductCardProps {
   price: number;
   picture: string;
   category: string;
-  rating: number;
-  reviewCount: number;
-  inStock: boolean;
+  rating?: number | string | null;
+  review_count?: number | null;
+  reviewCount?: number;
+  inStock?: boolean;
   featured?: boolean;
 }
 
@@ -30,6 +31,7 @@ const ProductCard = ({
   picture,
   category,
   rating,
+  review_count,
   reviewCount,
   featured = false
 }: ProductCardProps) => {
@@ -73,8 +75,7 @@ const ProductCard = ({
     ? imageUrl
     : `${baseUrl}${imageUrl}`;
 
-  // Use the API's rating when it sends one, otherwise fall back to the demo value.
-  const stars = rating ? { rating, reviewCount: reviewCount ?? 0 } : ratingFor(slug ?? id);
+  const stars = productRating({ rating, review_count, reviewCount });
 
   // Build a product object from props so we can pass it via navigation state
   const product = {
@@ -83,9 +84,10 @@ const ProductCard = ({
     name,
     description,
     price,
-    picture,
+    picture: displayImage,
     category,
-    reviewCount,
+    rating,
+    review_count: review_count ?? reviewCount,
     featured,
   };
 
@@ -125,16 +127,18 @@ const ProductCard = ({
           </p>
           
           {/* Rating */}
-          <StarRating
-            rating={stars.rating}
-            reviewCount={stars.reviewCount}
-            className="mb-4"
-          />
+          {stars && (
+            <StarRating
+              rating={stars.rating}
+              reviewCount={stars.reviewCount}
+              className="mb-4"
+            />
+          )}
         </div>
 
         {/* Price & Action */}
         <div className="flex items-center justify-between gap-2">
-          <span className="text-xl font-bold text-foreground">${price}</span>
+          <span className="text-xl font-bold text-foreground">${Number(price).toFixed(2)}</span>
           <div className="flex items-center gap-2">
             <Button
               variant="outline"

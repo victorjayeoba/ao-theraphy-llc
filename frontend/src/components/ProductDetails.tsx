@@ -4,8 +4,8 @@ import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '@/context/CartContext';
 import { Button } from '@/components/ui/button';
 import StarRating from '@/components/StarRating';
-import { ratingFor } from '@/lib/ratings';
-import { Minus, Plus, ShoppingCart } from 'lucide-react';
+import { productRating } from '@/lib/ratings';
+import { Loader2, Minus, Plus, ShoppingCart } from 'lucide-react';
 
 interface Product {
 	id: string;
@@ -14,6 +14,8 @@ interface Product {
 	price?: number;
 	description?: string;
 	picture?: string;
+	rating?: number | string | null;
+	review_count?: number | null;
 	[key: string]: any;
 }
 
@@ -25,7 +27,7 @@ const ProductDetails: React.FC = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 
-	const { addItem } = useCart();
+	const { addItem, closeCart } = useCart();
 
 	const initial: Product | null = (location.state as any)?.product ?? null;
 	const [product, setProduct] = useState<Product | null>(initial);
@@ -65,14 +67,24 @@ const ProductDetails: React.FC = () => {
 		};
 	}, [id]);
 
-	if (loading) return <div>Loading product...</div>;
-	if (error) return <div>Error loading product: {error}</div>;
-	if (!product) return <div>Product not found.</div>;
+	if (loading)
+		return (
+			<div className="min-h-[60vh] flex items-center justify-center text-muted-foreground">
+				<Loader2 className="w-6 h-6 animate-spin mr-2" /> Loading product...
+			</div>
+		);
+	if (error || !product)
+		return (
+			<div className="min-h-[60vh] flex flex-col items-center justify-center gap-4 text-center px-4">
+				<p className="text-lg">{error ? "We couldn't load this product." : 'Product not found.'}</p>
+				<Button className="btn-accent" onClick={() => navigate('/shop')}>Back to Shop</Button>
+			</div>
+		);
 
 	const title = product.title ?? product.name ?? 'Product';
-	const stars = product.rating
-		? { rating: Number(product.rating), reviewCount: Number(product.reviewCount ?? 0) }
-		: ratingFor(product.slug ?? product.id ?? title);
+	const stars = productRating(product);
+	const pic = product.picture ?? '';
+	const image = !pic || /^(https?:|data:)/.test(pic) ? pic : `${import.meta.env.VITE_BASE_URL}${pic}`;
 
 	const handleAddToCart = () =>
 		addItem(
@@ -80,10 +92,16 @@ const ProductDetails: React.FC = () => {
 				id: String(product.id),
 				name: title,
 				price: Number(product.price) || 0,
-				image: product.picture ?? '',
+				image,
 			},
 			quantity
 		);
+
+	const handleBuyNow = () => {
+		handleAddToCart();
+		closeCart(); // skip the sidebar, go straight to checkout
+		navigate('/checkout');
+	};
 	return (
 		<div className="container mx-auto py-[80px] px-4 lg:px-8 bg-white/80 dark:bg-slate-900 rounded-lg shadow-sm">
 			<div className="mb-4">
@@ -98,7 +116,7 @@ const ProductDetails: React.FC = () => {
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
 				<div>
 					<img
-						src={product.picture}
+						src={image}
 						alt={product.title ?? product.name}
 						className="w-full h-[500px] object-cover rounded-lg shadow-sm"
 					/>
@@ -111,7 +129,7 @@ const ProductDetails: React.FC = () => {
 						{title}
 					</h1>
 
-					<StarRating rating={stars.rating} reviewCount={stars.reviewCount} size={16} />
+					{stars && <StarRating rating={stars.rating} reviewCount={stars.reviewCount} size={16} />}
 
                     <div className="prose max-w-none my-6 text-muted-foreground">
 						{product.description ?? 'No description available.'}
@@ -174,8 +192,8 @@ const ProductDetails: React.FC = () => {
 							Add to Cart
 						</Button>
 
-						<Button variant="outline" onClick={() => navigate('/checkout')}>
-							Checkout
+						<Button variant="outline" onClick={handleBuyNow}>
+							Buy Now
 						</Button>
 					</div>
 
