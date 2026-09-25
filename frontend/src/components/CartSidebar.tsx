@@ -5,12 +5,10 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetFooter,
 } from "@/components/ui/sheet";
 import { Minus, Plus, X, ShoppingBag } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
 import { FREE_SHIPPING_OVER } from "@/lib/payment";
 
 const CartSidebar = () => {
@@ -95,8 +93,9 @@ const CartSidebar = () => {
               </div>
             </ScrollArea>
 
-            <SheetFooter className="flex-col gap-4">
-              <Separator />
+            {/* Plain div, not SheetFooter: its sm:flex-row + sm:justify-end turned the
+                full-width children into a row that overflowed out the left of the panel. */}
+            <div className="border-t pt-4">
               <div className="space-y-4 w-full">
                 <div className="space-y-1">
                   <div className="flex justify-between text-lg font-bold">
@@ -119,7 +118,7 @@ const CartSidebar = () => {
                   </Button>
                 </div>
               </div>
-            </SheetFooter>
+            </div>
           </>
         )}
       </SheetContent>
