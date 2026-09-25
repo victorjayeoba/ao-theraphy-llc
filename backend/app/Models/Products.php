@@ -18,6 +18,13 @@ class Products extends Model
         'price',
         'picture',
         'slug',
+        'rating',
+        'review_count',
+    ];
+
+    protected $casts = [
+        'rating' => 'float',
+        'review_count' => 'integer',
     ];
 
     protected static function boot()

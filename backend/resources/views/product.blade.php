@@ -132,6 +132,8 @@
         width: 100%;
         position: relative;
         animation: modalFadeIn 0.3s;
+        max-height: 90vh;
+        overflow-y: auto;
     }
     @keyframes modalFadeIn {
         from { opacity: 0; transform: translateY(-30px);}
@@ -289,6 +291,7 @@
                     <th>Category</th>
                     {{-- <th>Description</th> --}}
                     <th>Price</th>
+                    <th>Rating</th>
                     <th style="min-width:140px;">Actions</th>
                 </tr>
             </thead>
@@ -307,6 +310,14 @@
                     <td>{{ $product->category ?? '' }}</td>
                     {{-- <td>{{ $product->description }}</td> --}}
                     <td>${{ number_format($product->price, 2) }}</td>
+                    <td>
+                        @if(!is_null($product->rating))
+                            <i class="fa-solid fa-star" style="color:#f5b301;"></i> {{ number_format($product->rating, 1) }}
+                            <span style="color:#888;">({{ $product->review_count ?? 0 }})</span>
+                        @else
+                            <span style="color:#bbb;">&mdash;</span>
+                        @endif
+                    </td>
                     <td class="product-actions-cell">
                         <button class="product-action-btn" title="Edit"
                             onclick="showEditModal(
@@ -315,7 +326,9 @@
                                 '{{ addslashes($product->category) }}',
                                 `{{ e($product->description) }}`,
                                 '{{ $product->price }}',
-                                '{{ $product->picture ? $product->picture : '' }}'
+                                '{{ $product->picture ? $product->picture : '' }}',
+                                '{{ $product->rating }}',
+                                '{{ $product->review_count }}'
                             )">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </button>
@@ -329,7 +342,9 @@
                                 '{{ addslashes($product->category) }}',
                                 `{{ e($product->description) }}`,
                                 '{{ $product->price }}',
-                                '{{ $product->picture ? $product->picture : '' }}'
+                                '{{ $product->picture ? $product->picture : '' }}',
+                                '{{ $product->rating }}',
+                                '{{ $product->review_count }}'
                             )">
                             <i class="fa-solid fa-eye"></i>
                         </button>
@@ -373,6 +388,10 @@
                    oninput="validatePrice(this)" id="addPriceInput"
                    onkeydown="return allowOnlyPositiveNumber(event, this)">
             <div id="addPriceError" style="color:#e74c3c;font-size:0.97rem;margin-top:-10px;margin-bottom:10px;display:none;"></div>
+            <label>Rating (0&ndash;5, optional):</label>
+            <input type="number" name="rating" step="0.1" min="0" max="5" placeholder="e.g. 4.6">
+            <label>Review count (optional):</label>
+            <input type="number" name="review_count" step="1" min="0" placeholder="e.g. 128">
             <label>Picture:</label>
             <input type="file" name="picture" accept="image/*" id="addPictureInput" onchange="validateImageSize(this, 'addPictureError')">
             <div id="addPictureError" style="color:#e74c3c;font-size:0.97rem;margin-top:-10px;margin-bottom:10px;display:none;"></div>
@@ -410,6 +429,10 @@
                    oninput="validatePrice(this, 'editPriceError')"
                    onkeydown="return allowOnlyPositiveNumber(event, this)">
             <div id="editPriceError" style="color:#e74c3c;font-size:0.97rem;margin-top:-10px;margin-bottom:10px;display:none;"></div>
+            <label>Rating (0&ndash;5, optional):</label>
+            <input type="number" name="rating" id="editRating" step="0.1" min="0" max="5" placeholder="e.g. 4.6">
+            <label>Review count (optional):</label>
+            <input type="number" name="review_count" id="editReviewCount" step="1" min="0" placeholder="e.g. 128">
             <label>Picture:</label>
             <input type="file" name="picture" id="editPicture" accept="image/*" onchange="validateImageSize(this, 'editPictureError')">
             <div id="editPictureError" style="color:#e74c3c;font-size:0.97rem;margin-top:-10px;margin-bottom:10px;display:none;"></div>
@@ -448,6 +471,10 @@
             <tr>
                 <td class="view-modal-label" style="font-weight:700;color:#2176ae;padding:8px 10px 8px 0;">Price:</td>
                 <td class="view-modal-value" id="viewModalPrice" style="color:#2176ae;padding:8px 0;"></td>
+            </tr>
+            <tr>
+                <td class="view-modal-label" style="font-weight:700;color:#2176ae;padding:8px 10px 8px 0;">Rating:</td>
+                <td class="view-modal-value" id="viewModalRating" style="color:#2176ae;padding:8px 0;"></td>
             </tr>
         </table>
     </div>
@@ -504,7 +531,10 @@ function openProductModal() {
 function closeProductModal() {
     document.getElementById('productModal').style.display = 'none';
 }
-function showViewModal(name, category, description, price, img) {
+function showViewModal(name, category, description, price, img, rating, reviewCount) {
+    document.getElementById('viewModalRating').textContent = rating
+        ? parseFloat(rating).toFixed(1) + ' / 5 (' + (reviewCount || 0) + ' reviews)'
+        : 'Not set';
     document.getElementById('viewModalName').textContent = name;
     document.getElementById('viewModalCategory').textContent = category;
     document.getElementById('viewModalDescription').textContent = description;
@@ -521,7 +551,9 @@ function showViewModal(name, category, description, price, img) {
 function closeViewModal() {
     document.getElementById('viewModal').style.display = 'none';
 }
-function showEditModal(id, name, category, description, price, img) {
+function showEditModal(id, name, category, description, price, img, rating, reviewCount) {
+    document.getElementById('editRating').value = rating;
+    document.getElementById('editReviewCount').value = reviewCount;
     document.getElementById('editName').value = name;
     document.getElementById('editCategory').value = category;
     document.getElementById('editDescription').value = description;

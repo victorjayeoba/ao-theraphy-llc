@@ -8,11 +8,14 @@ import {
   SheetFooter,
 } from "@/components/ui/sheet";
 import { Minus, Plus, X, ShoppingBag } from "lucide-react";
+import { Link } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { FREE_SHIPPING_OVER } from "@/lib/payment";
 
 const CartSidebar = () => {
-  const { items, isOpen, closeCart, removeItem, updateQuantity, totalPrice, clearCart } = useCart();
+  const { items, isOpen, closeCart, removeItem, updateQuantity, totalPrice, totalItems, clearCart } = useCart();
+  const toFreeShipping = FREE_SHIPPING_OVER - totalPrice;
 
   return (
     <Sheet open={isOpen} onOpenChange={closeCart}>
@@ -20,7 +23,7 @@ const CartSidebar = () => {
         <SheetHeader>
           <SheetTitle className="flex items-center gap-2">
             <ShoppingBag className="w-5 h-5" />
-            Shopping Cart ({items.length})
+            Shopping Cart ({totalItems})
           </SheetTitle>
         </SheetHeader>
 
@@ -30,7 +33,7 @@ const CartSidebar = () => {
             <h3 className="text-lg font-semibold text-foreground mb-2">Your cart is empty</h3>
             <p className="text-muted-foreground mb-6">Add some therapeutic tools to get started</p>
             <Button asChild onClick={closeCart}>
-              <a href="/shop">Browse Products</a>
+              <Link to="/shop">Browse Products</Link>
             </Button>
           </div>
         ) : (
@@ -44,13 +47,17 @@ const CartSidebar = () => {
                       alt={item.name}
                       className="w-20 h-20 object-cover rounded-lg"
                     />
-                    <div className="flex-1 space-y-2">
-                      <div className="flex justify-between">
-                        <h4 className="font-semibold text-sm">{item.name}</h4>
+                    <div className="flex-1 min-w-0 space-y-2">
+                      <div className="flex justify-between gap-2">
+                        <div className="min-w-0">
+                          <h4 className="font-semibold text-sm line-clamp-2">{item.name}</h4>
+                          <p className="text-xs text-muted-foreground">${item.price.toFixed(2)} each</p>
+                        </div>
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-6 w-6 -mt-1"
+                          className="h-6 w-6 -mt-1 shrink-0"
+                          aria-label={`Remove ${item.name}`}
                           onClick={() => removeItem(item.id)}
                         >
                           <X className="w-4 h-4" />
@@ -62,6 +69,7 @@ const CartSidebar = () => {
                             variant="outline"
                             size="icon"
                             className="h-7 w-7"
+                            aria-label="Decrease quantity"
                             onClick={() => updateQuantity(item.id, item.quantity - 1)}
                           >
                             <Minus className="w-3 h-3" />
@@ -71,6 +79,7 @@ const CartSidebar = () => {
                             variant="outline"
                             size="icon"
                             className="h-7 w-7"
+                            aria-label="Increase quantity"
                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
                           >
                             <Plus className="w-3 h-3" />
@@ -89,16 +98,24 @@ const CartSidebar = () => {
             <SheetFooter className="flex-col gap-4">
               <Separator />
               <div className="space-y-4 w-full">
-                <div className="flex justify-between text-lg font-bold">
-                  <span>Total</span>
-                  <span>${totalPrice.toFixed(2)}</span>
+                <div className="space-y-1">
+                  <div className="flex justify-between text-lg font-bold">
+                    <span>Subtotal</span>
+                    <span>${totalPrice.toFixed(2)}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {toFreeShipping > 0
+                      ? `Add $${toFreeShipping.toFixed(2)} more for free shipping. `
+                      : "You've unlocked free shipping. "}
+                    Tax calculated at checkout.
+                  </p>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" onClick={clearCart} className="flex-1">
+                  <Button variant="outline" onClick={() => clearCart()} className="flex-1">
                     Clear Cart
                   </Button>
-                  <Button className="flex-1 btn-accent" asChild>
-                    <a href="/consultation">Checkout</a>
+                  <Button className="flex-1 btn-accent" asChild onClick={closeCart}>
+                    <Link to="/checkout">Checkout</Link>
                   </Button>
                 </div>
               </div>

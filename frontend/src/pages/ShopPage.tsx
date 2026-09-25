@@ -4,14 +4,14 @@ import { Input } from "@/components/ui/input";
 import ProductCard from "@/components/ProductCard";
 import { useQuery } from "@tanstack/react-query";
 import NotFound from "@/assets/undraw_file-search_cbur.svg";
-import { Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search } from "lucide-react";
+import { Link } from "react-router-dom";
 
 
 const ShopPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   // const [filtersOpen, setFiltersOpen] = useState(false);
   // const filtersRef = useRef<HTMLDivElement | null>(null);
 
@@ -61,13 +61,6 @@ const ShopPage = () => {
     return () => clearTimeout(t);
   }, [searchTerm]);
 
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
   const productList: ProductItem[] = Array.isArray(products) ? products : ((products as { data: ProductItem[] })?.data ?? []);
   const suggestions = useMemo(() => {
     const q = (debouncedSearchTerm ?? "").toString().trim().toLowerCase();
@@ -76,20 +69,6 @@ const ShopPage = () => {
       .filter((p) => (p.name ?? "").toString().toLowerCase().includes(q))
       .slice(0, 6);
   }, [productList, debouncedSearchTerm]);
-
-  // Debug: log sample product category fields so we can see how backend sends them
-  useEffect(() => {
-    if (!productList || productList.length === 0) return;
-    console.log(
-      "Shop product categories sample:",
-      productList.slice(0, 6).map((p) => ({
-        id: p.id,
-        name: p.name,
-        category: p.category,
-        categories: p.categories,
-      }))
-    );
-  }, [productList]);
 
 
     const categories = useMemo(() => {
@@ -279,7 +258,7 @@ const ShopPage = () => {
             recommendations for tools that will best support your specific goals and challenges.
           </p>
           <Button asChild size="lg" className="btn-accent">
-            <a href="/consultation">Schedule Consultation</a>
+            <Link to="/consultation">Schedule Consultation</Link>
           </Button>
         </div>
       </div>

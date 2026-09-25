@@ -1,3 +1,9 @@
 # Local product image export artifacts (not source code)
 /product-images/
 /products-export.json
+
+# Amazon rating lookup: output + browser profile
+/amazon-ratings.csv
+/.amazon-profile/
+/.playwright-mcp/
+/amazon-run.log
