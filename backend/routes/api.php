@@ -8,6 +8,8 @@ use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\AchievementController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\StripeWebhookController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -41,5 +43,9 @@ Route::get('/sessions', [SessionController::class, 'showSessionsAPI']);
 
 Route::get('/achievements', [AchievementController::class, 'apiIndex']);
 
-// Place a shop order (no payment gateway yet)
-Route::post('/orders', [OrderController::class, 'store'])->middleware('throttle:10,1');
+// Stripe Checkout: create the hosted payment session, then look the order up on return
+Route::post('/checkout/session', [CheckoutController::class, 'createSession'])->middleware('throttle:10,1');
+Route::get('/orders/by-session/{sessionId}', [CheckoutController::class, 'showBySession'])->middleware('throttle:60,1');
+
+// Stripe calls this server-to-server; it is signature-verified, not authenticated.
+Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);

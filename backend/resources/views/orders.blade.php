@@ -16,6 +16,12 @@
     .orders-table ul { margin: 0; padding-left: 18px; }
     .muted { color: #888; font-size: 0.85rem; }
     .badge { display: inline-block; padding: 3px 10px; border-radius: 999px; background: #e6f7f4; color: #1a8a7c; font-size: 0.8rem; font-weight: 600; text-transform: capitalize; }
+    .badge-pending { background: #fff4e0; color: #a86b1a; }
+    .badge-abandoned { background: #f1f3f5; color: #8a9199; }
+    .filters { display: flex; gap: 8px; margin-bottom: 14px; }
+    .filters a { padding: 6px 14px; border-radius: 999px; font-size: 0.85rem; text-decoration: none; color: #1e6fa7; border: 1px solid #d6e4f0; }
+    .filters a.active { background: #1e6fa7; color: #fff; border-color: #1e6fa7; }
+    .stripe-link { font-size: 0.8rem; color: #635bff; text-decoration: none; }
     @media (max-width: 900px) { .orders-wrapper { padding: 15px; } }
 </style>
 
@@ -23,6 +29,12 @@
     <div class="orders-header">
         <span>Shop Orders</span>
         <small>{{ $orders->count() }} total &middot; ${{ number_format($orders->sum('total'), 2) }}</small>
+    </div>
+    <div class="filters">
+        @foreach(['paid' => 'Paid', 'pending' => 'Pending', 'abandoned' => 'Abandoned', 'all' => 'All'] as $key => $label)
+            <a href="{{ route('orders.index', $key === 'paid' ? [] : ['status' => $key]) }}"
+               class="{{ $status === $key ? 'active' : '' }}">{{ $label }}</a>
+        @endforeach
     </div>
     <div class="table-card">
         <div class="table-responsive">
@@ -65,10 +77,19 @@
                             </span>
                             @if($order->card_last4)<br><span class="muted">Card &bull;&bull;&bull;&bull; {{ $order->card_last4 }}</span>@endif
                         </td>
-                        <td><span class="badge">{{ $order->status }}</span></td>
+                        <td>
+                            <span class="badge badge-{{ $order->status }}">{{ $order->status }}</span>
+                            @if($order->stripe_payment_intent)
+                                <br>
+                                <a class="stripe-link" target="_blank" rel="noopener"
+                                   href="https://dashboard.stripe.com/payments/{{ $order->stripe_payment_intent }}">
+                                    View in Stripe &rarr;
+                                </a>
+                            @endif
+                        </td>
                     </tr>
                 @empty
-                    <tr><td colspan="6" style="text-align:center;">No orders yet.</td></tr>
+                    <tr><td colspan="6" style="text-align:center;">No {{ $status === 'all' ? '' : $status }} orders yet.</td></tr>
                 @endforelse
                 </tbody>
             </table>
