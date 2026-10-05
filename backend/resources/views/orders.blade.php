@@ -72,8 +72,7 @@
                             <strong>${{ number_format($order->total, 2) }}</strong><br>
                             <span class="muted">
                                 Sub ${{ number_format($order->subtotal, 2) }} &middot;
-                                Ship {{ $order->shipping > 0 ? '$' . number_format($order->shipping, 2) : 'free' }} &middot;
-                                Tax ${{ number_format($order->tax, 2) }}
+                                Ship {{ $order->shipping > 0 ? '$' . number_format($order->shipping, 2) : 'free' }}@if($order->tax > 0) &middot; Tax ${{ number_format($order->tax, 2) }}@endif
                             </span>
                             @if($order->card_last4)<br><span class="muted">Card &bull;&bull;&bull;&bull; {{ $order->card_last4 }}</span>@endif
                         </td>

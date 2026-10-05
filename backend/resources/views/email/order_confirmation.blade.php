@@ -39,10 +39,12 @@
                             {{ $order->shipping > 0 ? '$' . number_format($order->shipping, 2) : 'Free' }}
                         </td>
                     </tr>
-                    <tr>
-                        <td style="padding:4px 0;color:#64748b;">Tax</td>
-                        <td style="padding:4px 0;text-align:right;color:#64748b;">${{ number_format($order->tax, 2) }}</td>
-                    </tr>
+                    @if($order->tax > 0)
+                        <tr>
+                            <td style="padding:4px 0;color:#64748b;">Tax</td>
+                            <td style="padding:4px 0;text-align:right;color:#64748b;">${{ number_format($order->tax, 2) }}</td>
+                        </tr>
+                    @endif
                     <tr>
                         <td style="padding:12px 0 0;font-weight:700;font-size:17px;border-top:2px solid #2bb7a7;">Total paid</td>
                         <td style="padding:12px 0 0;text-align:right;font-weight:700;font-size:17px;border-top:2px solid #2bb7a7;">

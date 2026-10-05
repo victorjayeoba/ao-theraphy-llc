@@ -56,10 +56,12 @@
                         <td style="padding:4px 0;color:#64748b;">Shipping</td>
                         <td style="padding:4px 0;text-align:right;color:#64748b;">${{ number_format($order->shipping, 2) }}</td>
                     </tr>
-                    <tr>
-                        <td style="padding:4px 0;color:#64748b;">Tax</td>
-                        <td style="padding:4px 0;text-align:right;color:#64748b;">${{ number_format($order->tax, 2) }}</td>
-                    </tr>
+                    @if($order->tax > 0)
+                        <tr>
+                            <td style="padding:4px 0;color:#64748b;">Tax</td>
+                            <td style="padding:4px 0;text-align:right;color:#64748b;">${{ number_format($order->tax, 2) }}</td>
+                        </tr>
+                    @endif
                     <tr>
                         <td style="padding:12px 0 0;font-weight:700;border-top:2px solid #2bb7a7;">Total</td>
                         <td style="padding:12px 0 0;text-align:right;font-weight:700;border-top:2px solid #2bb7a7;">

@@ -108,10 +108,10 @@ rather than duplicating it.
 nullable. Enabling delivery later is then a config change, not a new form. Alternative: skip
 addresses entirely for now.
 
-**2. Tax.** Currently a flat 7%. Recommendation: keep it exactly as is so totals don't change.
-Be aware it will be wrong for some customers, since US sales tax varies by state and city, and
-it is the business's liability. Stripe Tax calculates it correctly but adds a per-transaction
-fee. Fine to start flat and revisit.
+**2. Tax — DECIDED: no tax charged.** The business is not registered to collect sales tax, so
+the placeholder 7% line was removed entirely. Customers pay product + shipping. If she registers
+later, Stripe Tax calculates the correct per-address rate (per-transaction fee) — that is the
+route to take, rather than inventing a flat rate.
 
 **3. Test mode first.** Build and verify with test keys (`sk_test_...`) and Stripe's test cards.
 Going live is then an environment-variable change. Strongly recommended.
@@ -155,7 +155,6 @@ New endpoint: `POST /api/checkout/session`
 4. Build the Stripe session:
    - One line item per product, priced from the database.
    - Shipping as a shipping option (free over $75, otherwise $7.99).
-   - Tax as its own line item at 7% (per decision 2).
    - `success_url` → `/checkout/success?session_id={CHECKOUT_SESSION_ID}`
    - `cancel_url` → back to the cart, contents intact.
    - `metadata.order_id` → so the webhook can find the order.
@@ -291,7 +290,7 @@ Any future expiry date, any CVC.
 | Risk | Handling |
 |---|---|
 | Webhook missed or failing | Stripe retries for up to ~3 days and logs every attempt in the dashboard. The delivery log is the place to look when an order looks stuck on pending. |
-| Flat 7% tax is wrong for some states | Accepted for now; it is the business's liability. Stripe Tax when it matters. |
+| Not charging sales tax | Correct while unregistered. If she registers in any state, tax must be collected there — switch to Stripe Tax at that point. |
 | Prices change between adding to cart and paying | The session is built from database prices at that moment, so the customer is always charged the current price. The order stores a snapshot. |
 | Abandoned pending orders accumulate | `checkout.session.expired` marks them abandoned; the dashboard filters them out by default. |
 | Keys leaking | Server `.env` only, never committed, never sent to the frontend. Rotate immediately if exposed. |

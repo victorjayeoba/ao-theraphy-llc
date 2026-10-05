@@ -223,10 +223,6 @@ const CheckoutPage = () => {
                   <span className="text-muted-foreground">Shipping</span>
                   <span>{totals.shipping === 0 ? "Free" : `$${totals.shipping.toFixed(2)}`}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Tax</span>
-                  <span>${totals.tax.toFixed(2)}</span>
-                </div>
               </div>
 
               {totals.shipping > 0 && (

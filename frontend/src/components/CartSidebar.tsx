@@ -106,7 +106,7 @@ const CartSidebar = () => {
                     {toFreeShipping > 0
                       ? `Add $${toFreeShipping.toFixed(2)} more for free shipping. `
                       : "You've unlocked free shipping. "}
-                    Tax calculated at checkout.
+                    Shipping calculated at checkout.
                   </p>
                 </div>
                 <div className="flex gap-2">

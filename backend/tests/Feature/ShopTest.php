@@ -37,7 +37,7 @@ class ShopTest extends TestCase
             'email' => 'a@b.co',
             'name' => 'Jane',
             'items' => [['id' => 1, 'name' => 'Putty', 'price' => 20.0, 'quantity' => 2]],
-            'subtotal' => 40.0, 'shipping' => 7.99, 'tax' => 2.8, 'total' => 50.79,
+            'subtotal' => 40.0, 'shipping' => 7.99, 'tax' => 0, 'total' => 47.99,
             'status' => 'pending',
         ], $attrs));
     }
@@ -87,7 +87,7 @@ class ShopTest extends TestCase
 
         $this->assertSame(4550, $priced['subtotal']);   // cents
         $this->assertSame(799, $priced['shipping']);
-        $this->assertSame(319, $priced['tax']);
+        $this->assertArrayNotHasKey('tax', $priced);   // not registered to collect sales tax
         $this->assertSame(20.0, $priced['lines'][0]['price']);
     }
 

@@ -21,7 +21,9 @@ class CheckoutController extends Controller
     // Mirrors frontend/src/lib/payment.ts — keep the two in step.
     const FREE_SHIPPING_OVER = 75;
     const SHIPPING_FLAT = 7.99;
-    const TAX_RATE = 0.07;
+    // No sales tax: the business is not registered to collect it, and charging a line
+    // labelled "tax" without being registered is not ours to invent. Revisit with Stripe
+    // Tax if that changes.
 
     public function createSession(Request $request)
     {
@@ -35,7 +37,7 @@ class CheckoutController extends Controller
             'items.*.id.exists' => 'An item in your cart is no longer available. Please remove it and try again.',
         ]);
 
-        ['lines' => $lines, 'subtotal' => $subtotalCents, 'shipping' => $shippingCents, 'tax' => $taxCents]
+        ['lines' => $lines, 'subtotal' => $subtotalCents, 'shipping' => $shippingCents]
             = $this->priceCart($data['items']);
 
         $order = Order::create([
@@ -45,8 +47,8 @@ class CheckoutController extends Controller
             'items'    => $lines,
             'subtotal' => $subtotalCents / 100,
             'shipping' => $shippingCents / 100,
-            'tax'      => $taxCents / 100,
-            'total'    => ($subtotalCents + $shippingCents + $taxCents) / 100,
+            'tax'      => 0,
+            'total'    => ($subtotalCents + $shippingCents) / 100,
             'status'   => 'pending',
         ]);
 
@@ -56,7 +58,7 @@ class CheckoutController extends Controller
                 'customer_email' => $order->email,
                 'client_reference_id' => $order->number,
                 'metadata' => ['order_id' => $order->id],
-                'line_items' => $this->lineItems($lines, $taxCents),
+                'line_items' => $this->lineItems($lines),
                 'shipping_options' => $shippingCents > 0 ? [[
                     'shipping_rate_data' => [
                         'type' => 'fixed_amount',
@@ -127,12 +129,10 @@ class CheckoutController extends Controller
             'lines'    => $lines,
             'subtotal' => $subtotalCents,
             'shipping' => $subtotalCents >= self::FREE_SHIPPING_OVER * 100 ? 0 : (int) round(self::SHIPPING_FLAT * 100),
-            'tax'      => (int) round($subtotalCents * self::TAX_RATE),
         ];
     }
 
-    /** Tax rides as its own line so the Stripe page totals match ours to the cent. */
-    private function lineItems(array $lines, int $taxCents): array
+    private function lineItems(array $lines): array
     {
         $items = [];
         foreach ($lines as $line) {
@@ -142,17 +142,6 @@ class CheckoutController extends Controller
                     'currency' => 'usd',
                     'unit_amount' => (int) round($line['price'] * 100),
                     'product_data' => ['name' => $line['name']],
-                ],
-            ];
-        }
-
-        if ($taxCents > 0) {
-            $items[] = [
-                'quantity' => 1,
-                'price_data' => [
-                    'currency' => 'usd',
-                    'unit_amount' => $taxCents,
-                    'product_data' => ['name' => 'Sales tax (7%)'],
                 ],
             ];
         }
