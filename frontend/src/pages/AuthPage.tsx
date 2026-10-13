@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { toast } from "@/hooks/use-toast";
-import { Loader2, Info } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 const AuthPage = () => {
   const { login, register } = useAuth();
@@ -71,19 +71,11 @@ const AuthPage = () => {
           <CardHeader className="text-center">
             <CardTitle className="text-2xl">Your Account</CardTitle>
             <CardDescription>
-              Sign in to keep track of your cart and orders.
+              Sign in to see your orders and track deliveries.
             </CardDescription>
           </CardHeader>
 
           <CardContent>
-            <Alert className="mb-6">
-              <Info className="h-4 w-4" />
-              <AlertDescription className="text-xs">
-                Demo mode &mdash; accounts are stored only in this browser. Please do
-                not use a real password.
-              </AlertDescription>
-            </Alert>
-
             <Tabs value={tab} onValueChange={switchTab}>
               <TabsList className="grid w-full grid-cols-2 mb-6">
                 <TabsTrigger value="login">Sign In</TabsTrigger>
