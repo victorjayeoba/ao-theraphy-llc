@@ -14,7 +14,11 @@ const AuthPage = () => {
   const { login, register } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const redirectTo = (location.state as { from?: string })?.from ?? "/shop";
+  const cameFrom = (location.state as { from?: string })?.from;
+  // Coming from a page that bounced them (e.g. /orders) sends them back there. Otherwise a
+  // returning customer is usually here to check an order, while a brand new account has none.
+  const afterLogin = cameFrom ?? "/orders";
+  const afterRegister = cameFrom ?? "/shop";
 
   const [tab, setTab] = useState("login");
   const [error, setError] = useState<string | null>(null);
@@ -39,7 +43,7 @@ const AuthPage = () => {
       return;
     }
     toast({ title: "Welcome back", description: "You are now signed in." });
-    navigate(redirectTo, { replace: true });
+    navigate(afterLogin, { replace: true });
   };
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -55,8 +59,11 @@ const AuthPage = () => {
       setError(failure);
       return;
     }
-    toast({ title: "Account created", description: "You are now signed in." });
-    navigate(redirectTo, { replace: true });
+    toast({
+      title: "Account created",
+      description: "You are signed in. Orders you place now will show under My orders.",
+    });
+    navigate(afterRegister, { replace: true });
   };
 
   const switchTab = (value: string) => {
@@ -205,6 +212,13 @@ const AuthPage = () => {
                 </form>
               </TabsContent>
             </Tabs>
+            <p className="text-xs text-muted-foreground text-center mt-6">
+              Ordered as a guest?{" "}
+              <Link to="/track" className="underline hover:text-foreground">
+                Track your order
+              </Link>{" "}
+              with your order number instead.
+            </p>
           </CardContent>
         </Card>
       </div>
