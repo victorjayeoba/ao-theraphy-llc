@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Phone, ShoppingCart, ChevronDown, User, LogOut } from "lucide-react";
+import { Menu, X, Phone, ShoppingCart, ChevronDown, User, LogOut, Package, Truck } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -182,11 +182,11 @@ const Header = () => {
               ))}
               <div className="pt-4 border-t border-border">
                 <a
-                  href="tel:555-123-4567"
+                  href="tel:(630) 394-0632"
                   className="flex items-center space-x-2 px-3 py-2 text-muted-foreground"
                 >
                   <Phone size={16} />
-                  <span>(555) 123-4567)</span>
+                  <span>(630) 394-0632</span>
                 </a>
                 <Button
                   variant="outline"
@@ -201,17 +201,30 @@ const Header = () => {
                 </Button>
 
                 {user ? (
-                  <Button
-                    variant="outline"
-                    className="w-full mt-3 flex items-center justify-center gap-2"
-                    onClick={() => {
-                      logout();
-                      setIsMenuOpen(false);
-                    }}
-                  >
-                    <LogOut size={16} />
-                    Sign Out ({user.name.split(" ")[0]})
-                  </Button>
+                  <>
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="w-full mt-3 flex items-center justify-center gap-2"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <Link to="/orders">
+                        <Package size={16} />
+                        My Orders
+                      </Link>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="w-full mt-3 flex items-center justify-center gap-2"
+                      onClick={() => {
+                        logout();
+                        setIsMenuOpen(false);
+                      }}
+                    >
+                      <LogOut size={16} />
+                      Sign Out ({user.name.split(" ")[0]})
+                    </Button>
+                  </>
                 ) : (
                   <Button
                     asChild
@@ -225,6 +238,17 @@ const Header = () => {
                     </Link>
                   </Button>
                 )}
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="w-full mt-3 flex items-center justify-center gap-2 text-muted-foreground"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <Link to="/track">
+                    <Truck size={16} />
+                    Track an Order
+                  </Link>
+                </Button>
                 <Button asChild className="btn-hero w-full mt-3" onClick={() => setIsMenuOpen(false)}>
                   <Link to="/consultation">Book Consultation</Link>
                   
