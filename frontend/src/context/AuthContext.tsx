@@ -1,132 +1,158 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from "react";
 
-// DEMO AUTH. Everything lives in this browser's localStorage — there is no server,
-// no session, and no way to trust any of it. Passwords are salted + hashed anyway so
-// the demo never teaches the wrong habit, but this is NOT a security boundary.
-// Replace with the Laravel AuthController (backend/app/Http/Controllers/AuthController.php)
-// before anything real ships.
+// Real accounts, backed by the Laravel API (CustomerAuthController) with Sanctum bearer
+// tokens. The token lives in localStorage so a refresh keeps you signed in; that means an
+// XSS hole would expose it, which is the usual trade-off for a token SPA. Nothing sensitive
+// is kept client-side: the token only reaches /api/customer/* and only ever sees that
+// customer's own orders.
 
 export interface User {
-  id: string;
+  id: number;
   name: string;
   email: string;
 }
 
-interface StoredUser extends User {
-  salt: string;
-  hash: string;
-  createdAt: string;
-}
-
-// Returns null on success, or the message to show. (A discriminated union would be
-// tidier, but this project builds with strictNullChecks off, which breaks narrowing.)
-type Result = string | null;
+type Result = string | null; // null on success, else the message to show
 
 interface AuthContextType {
   user: User | null;
+  token: string | null;
   register: (name: string, email: string, password: string) => Promise<Result>;
   login: (email: string, password: string) => Promise<Result>;
   logout: () => void;
   ready: boolean;
+  authFetch: (path: string, init?: RequestInit) => Promise<Response>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const USERS_KEY = "ao-demo-users";
-const SESSION_KEY = "ao-demo-session";
+const TOKEN_KEY = "ao-token";
+const API = () => import.meta.env.VITE_BASE_URL;
 
-const read = <T,>(key: string, fallback: T): T => {
+const readToken = (): string | null => {
   try {
-    const raw = localStorage.getItem(key);
-    return raw ? (JSON.parse(raw) as T) : fallback;
+    return localStorage.getItem(TOKEN_KEY);
   } catch {
-    return fallback;
+    return null; // private mode / blocked storage: sign-in just won't persist
   }
 };
 
-const write = (key: string, value: unknown) => {
+const writeToken = (token: string | null) => {
   try {
-    localStorage.setItem(key, JSON.stringify(value));
+    if (token) localStorage.setItem(TOKEN_KEY, token);
+    else localStorage.removeItem(TOKEN_KEY);
   } catch {
-    /* blocked storage: the account just won't persist */
+    /* ignore */
   }
 };
 
-const toHex = (buf: ArrayBuffer) =>
-  [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
-
-const hashPassword = async (password: string, salt: string): Promise<string> => {
-  const data = new TextEncoder().encode(`${salt}:${password}`);
-  return toHex(await crypto.subtle.digest("SHA-256", data));
+/** Turns a Laravel error response into one sentence for the user. */
+const messageFrom = async (res: Response): Promise<string> => {
+  const data = await res.json().catch(() => ({} as Record<string, unknown>));
+  const errors = (data as { errors?: Record<string, string[]> }).errors;
+  if (errors) {
+    const first = Object.values(errors)[0];
+    if (first?.[0]) return first[0];
+  }
+  const message = (data as { message?: string }).message;
+  if (message && res.status !== 500) return message;
+  return "Something went wrong. Please try again.";
 };
-
-const normalizeEmail = (email: string) => email.trim().toLowerCase();
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(readToken);
   const [ready, setReady] = useState(false);
 
+  // Restore the session on load. A rejected token means it was revoked or expired.
   useEffect(() => {
-    const email = read<string | null>(SESSION_KEY, null);
-    if (email) {
-      const found = read<StoredUser[]>(USERS_KEY, []).find((u) => u.email === email);
-      if (found) setUser({ id: found.id, name: found.name, email: found.email });
+    const stored = readToken();
+    if (!stored) {
+      setReady(true);
+      return;
     }
-    setReady(true);
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`${API()}/api/customer/me`, {
+          headers: { Authorization: `Bearer ${stored}`, Accept: "application/json" },
+        });
+        if (cancelled) return;
+        if (res.ok) {
+          setUser(await res.json());
+        } else if (res.status === 401) {
+          writeToken(null);
+          setToken(null);
+        }
+        // Other failures (server down, offline) keep the token: the user is probably
+        // still signed in, we just couldn't check right now.
+      } catch {
+        /* offline — keep the token and try again next load */
+      } finally {
+        if (!cancelled) setReady(true);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const startSession = (u: StoredUser) => {
-    write(SESSION_KEY, u.email);
-    setUser({ id: u.id, name: u.name, email: u.email });
-  };
-
-  const register = async (name: string, email: string, password: string): Promise<Result> => {
-    const clean = normalizeEmail(email);
-    if (!name.trim()) return "Please enter your name.";
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(clean))
-      return "Please enter a valid email address.";
-    if (password.length < 8) return "Password must be at least 8 characters.";
-
-    const users = read<StoredUser[]>(USERS_KEY, []);
-    if (users.some((u) => u.email === clean))
-      return "An account with that email already exists.";
-
-    const salt = toHex(crypto.getRandomValues(new Uint8Array(16)).buffer);
-    const created: StoredUser = {
-      id: crypto.randomUUID(),
-      name: name.trim(),
-      email: clean,
-      salt,
-      hash: await hashPassword(password, salt),
-      createdAt: new Date().toISOString(),
-    };
-    write(USERS_KEY, [...users, created]);
-    startSession(created);
-    return null;
-  };
-
-  const login = async (email: string, password: string): Promise<Result> => {
-    const clean = normalizeEmail(email);
-    const found = read<StoredUser[]>(USERS_KEY, []).find((u) => u.email === clean);
-    // Same message either way, so the form can't be used to enumerate accounts.
-    const invalid = "Incorrect email or password.";
-    if (!found) return invalid;
-    if ((await hashPassword(password, found.salt)) !== found.hash) return invalid;
-    startSession(found);
-    return null;
-  };
-
-  const logout = () => {
+  const authenticate = async (path: string, body: Record<string, string>): Promise<Result> => {
     try {
-      localStorage.removeItem(SESSION_KEY);
+      const res = await fetch(`${API()}/api/customer/${path}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) return await messageFrom(res);
+
+      const data = await res.json();
+      writeToken(data.token);
+      setToken(data.token);
+      setUser(data.customer);
+      return null;
     } catch {
-      /* ignore */
+      return "We couldn't reach the store. Check your connection and try again.";
     }
-    setUser(null);
   };
+
+  const register = (name: string, email: string, password: string) =>
+    authenticate("register", { name, email, password });
+
+  const login = (email: string, password: string) =>
+    authenticate("login", { email, password });
+
+  const logout = useCallback(() => {
+    const stored = readToken();
+    // Clear locally first: signing out must work even if the request fails.
+    writeToken(null);
+    setToken(null);
+    setUser(null);
+    if (stored) {
+      fetch(`${API()}/api/customer/logout`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${stored}`, Accept: "application/json" },
+      }).catch(() => {
+        /* best effort: the token is gone from this browser either way */
+      });
+    }
+  }, []);
+
+  const authFetch = useCallback(
+    (path: string, init: RequestInit = {}) =>
+      fetch(`${API()}${path}`, {
+        ...init,
+        headers: {
+          ...(init.headers ?? {}),
+          Accept: "application/json",
+          ...(readToken() ? { Authorization: `Bearer ${readToken()}` } : {}),
+        },
+      }),
+    []
+  );
 
   return (
-    <AuthContext.Provider value={{ user, register, login, logout, ready }}>
+    <AuthContext.Provider value={{ user, token, register, login, logout, ready, authFetch }}>
       {children}
     </AuthContext.Provider>
   );
@@ -134,8 +160,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within AuthProvider");
-  }
+  if (!context) throw new Error("useAuth must be used within AuthProvider");
   return context;
 };

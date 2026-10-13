@@ -145,7 +145,9 @@ const CheckoutSuccessPage = () => {
             <Link to="/shop">Continue shopping</Link>
           </Button>
           <Button className="btn-accent" asChild>
-            <Link to="/">Back home</Link>
+            <Link to={`/track?number=${encodeURIComponent(order.number)}&email=${encodeURIComponent(order.email)}`}>
+              Track this order
+            </Link>
           </Button>
         </div>
       </div>

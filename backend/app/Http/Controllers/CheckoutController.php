@@ -41,6 +41,9 @@ class CheckoutController extends Controller
             = $this->priceCart($data['items']);
 
         $order = Order::create([
+            // Signed in? Tie the order to the account so it shows in their order history.
+            // Guests get null and track by order number + email instead.
+            'customer_id' => optional($request->user('customer'))->id,
             'number'   => 'AO-' . strtoupper(Str::random(8)),
             'email'    => $data['email'],
             'name'     => $data['name'],

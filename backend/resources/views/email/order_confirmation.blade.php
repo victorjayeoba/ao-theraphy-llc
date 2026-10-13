@@ -60,9 +60,17 @@
                     </p>
                 @endif
 
+                <p style="margin:24px 0;text-align:center;">
+                    <a href="{{ rtrim(config('app.frontend_url'), '/') }}/track?number={{ urlencode($order->number) }}&email={{ urlencode($order->email) }}"
+                       style="background:#2bb7a7;color:#fff;text-decoration:none;padding:12px 26px;border-radius:999px;font-weight:600;display:inline-block;">
+                        Track your order
+                    </a>
+                </p>
+
                 <p style="color:#64748b;font-size:14px;">
-                    We'll be in touch about delivery. If anything looks wrong, just reply to this email
-                    and we'll sort it out.
+                    We order your items in as soon as your payment clears, and we'll email you a tracking
+                    number as soon as they ship. If anything looks wrong, just reply to this email and
+                    we'll sort it out.
                 </p>
                 <p style="margin-bottom:0;">Warm regards,<br><strong>A&amp;O Therapy LLC</strong></p>
             </div>

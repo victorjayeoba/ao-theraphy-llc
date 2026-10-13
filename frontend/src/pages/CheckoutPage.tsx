@@ -18,7 +18,7 @@ import { Lock, ShoppingBag, Loader2, AlertCircle } from "lucide-react";
  */
 const CheckoutPage = () => {
   const { items, totalPrice } = useCart();
-  const { user } = useAuth();
+  const { user, authFetch } = useAuth();
   const navigate = useNavigate();
   const [params] = useSearchParams();
 
@@ -63,9 +63,11 @@ const CheckoutPage = () => {
     try {
       // The server re-prices every line from the database, so these ids and quantities
       // are all it needs — a price sent from here would be ignored.
-      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/checkout/session`, {
+      // authFetch adds the bearer token when signed in, so the order lands in their
+      // order history; guests send the same request without one.
+      const res = await authFetch("/api/checkout/session", {
         method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: form.email.trim(),
           name: form.name.trim(),

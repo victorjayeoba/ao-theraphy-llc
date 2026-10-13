@@ -40,6 +40,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Shop orders
     Route::get('/orders', [App\Http\Controllers\OrderController::class, 'index'])->name('orders.index');
+    Route::match(['put', 'patch'], '/orders/{id}', [App\Http\Controllers\OrderController::class, 'update'])->name('orders.update');
 
     // Consultations Management
     Route::get('/consultations', [App\Http\Controllers\ConsultationController::class, 'index'])->name('consultations.index');

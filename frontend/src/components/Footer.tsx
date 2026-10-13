@@ -29,6 +29,9 @@ const Footer = () => {
               <Link to="/shop" className="text-primary-foreground/80 hover:text-accent transition-colors">
                 Therapeutic Tools
               </Link>
+              <Link to="/track" className="text-primary-foreground/80 hover:text-accent transition-colors">
+                Track Your Order
+              </Link>
               <Link to="/consultation" className="text-primary-foreground/80 hover:text-accent transition-colors">
                 Book Consultation
               </Link>

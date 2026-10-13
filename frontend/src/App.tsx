@@ -22,6 +22,8 @@ import ProductDetails from "./components/ProductDetails";
 import AuthPage from "./pages/AuthPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import CheckoutSuccessPage from "./pages/CheckoutSuccessPage";
+import TrackOrderPage from "./pages/TrackOrderPage";
+import MyOrdersPage from "./pages/MyOrdersPage";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import ScrollToTop from "./ScrollToTop.jsx";
 import Terms from "./pages/terms.js";
@@ -60,6 +62,8 @@ const AnimatedRoutes: React.FC = () => {
         <Route path="/auth" element={<PageWrapper><AuthPage /></PageWrapper>} />
         <Route path="/checkout" element={<PageWrapper><CheckoutPage /></PageWrapper>} />
         <Route path="/checkout/success" element={<PageWrapper><CheckoutSuccessPage /></PageWrapper>} />
+        <Route path="/track" element={<PageWrapper><TrackOrderPage /></PageWrapper>} />
+        <Route path="/orders" element={<PageWrapper><MyOrdersPage /></PageWrapper>} />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<PageWrapper><NotFound /></PageWrapper>} />
         <Route path="/privacy-policy" element={<PageWrapper><PrivacyPolicy /></PageWrapper>} />

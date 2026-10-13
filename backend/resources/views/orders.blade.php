@@ -22,6 +22,20 @@
     .filters a { padding: 6px 14px; border-radius: 999px; font-size: 0.85rem; text-decoration: none; color: #1e6fa7; border: 1px solid #d6e4f0; }
     .filters a.active { background: #1e6fa7; color: #fff; border-color: #1e6fa7; }
     .stripe-link { font-size: 0.8rem; color: #635bff; text-decoration: none; }
+    .badge-ordered { background: #e7effc; color: #2558a8; }
+    .badge-shipped { background: #e8f1ff; color: #1b4fa0; }
+    .badge-delivered { background: #e6f7f4; color: #1a8a7c; }
+    .badge-cancelled { background: #fdecec; color: #b3261e; }
+    .fulfil-toggle { margin-top: 8px; background: none; border: 1px solid #d6e4f0; color: #1e6fa7; border-radius: 999px; padding: 4px 12px; font-size: 0.78rem; cursor: pointer; }
+    .fulfil-toggle:hover { background: #f0f8ff; }
+    .fulfil-row > td { background: #fbfdff; padding-top: 0; }
+    .fulfil-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; align-items: end; padding: 14px 0; }
+    .fulfil-form label { display: block; font-size: 0.78rem; color: #64748b; margin-bottom: 4px; }
+    .fulfil-form input, .fulfil-form select { width: 100%; padding: 8px 10px; border: 1px solid #d6e4f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; }
+    .fulfil-form button { background: #1e6fa7; color: #fff; border: none; border-radius: 8px; padding: 9px 18px; font-weight: 600; cursor: pointer; }
+    .fulfil-form button:hover { background: #17588a; }
+    .flash { background: #e6f7f4; color: #1a8a7c; border-radius: 10px; padding: 12px 16px; margin-bottom: 14px; font-weight: 600; }
+    .hint { grid-column: 1 / -1; font-size: 0.78rem; color: #8a9199; margin: 0; }
     @media (max-width: 900px) { .orders-wrapper { padding: 15px; } }
 </style>
 
@@ -30,8 +44,11 @@
         <span>Shop Orders</span>
         <small>{{ $orders->count() }} total &middot; ${{ number_format($orders->sum('total'), 2) }}</small>
     </div>
+    @if(session('success'))
+        <div class="flash">{{ session('success') }}</div>
+    @endif
     <div class="filters">
-        @foreach(['paid' => 'Paid', 'pending' => 'Pending', 'abandoned' => 'Abandoned', 'all' => 'All'] as $key => $label)
+        @foreach(['paid' => 'To fulfil', 'ordered' => 'Ordered', 'shipped' => 'Shipped', 'delivered' => 'Delivered', 'pending' => 'Pending', 'abandoned' => 'Abandoned', 'all' => 'All'] as $key => $label)
             <a href="{{ route('orders.index', $key === 'paid' ? [] : ['status' => $key]) }}"
                class="{{ $status === $key ? 'active' : '' }}">{{ $label }}</a>
         @endforeach
@@ -78,6 +95,12 @@
                         </td>
                         <td>
                             <span class="badge badge-{{ $order->status }}">{{ $order->status }}</span>
+                            @if($order->tracking_number)
+                                <br><span class="muted">{{ $order->carrier }} {{ $order->tracking_number }}</span>
+                            @endif
+                            @if($order->supplier_order_ref)
+                                <br><span class="muted">Amazon: {{ $order->supplier_order_ref }}</span>
+                            @endif
                             @if($order->stripe_payment_intent)
                                 <br>
                                 <a class="stripe-link" target="_blank" rel="noopener"
@@ -85,8 +108,58 @@
                                     View in Stripe &rarr;
                                 </a>
                             @endif
+                            @if(in_array($order->status, \App\Models\Order::FULFILMENT_STATUSES))
+                                <br>
+                                <button type="button" class="fulfil-toggle"
+                                        onclick="toggleFulfil({{ $order->id }})">Update fulfilment</button>
+                            @endif
                         </td>
                     </tr>
+                    @if(in_array($order->status, \App\Models\Order::FULFILMENT_STATUSES))
+                        <tr class="fulfil-row" id="fulfil-{{ $order->id }}" style="display:none;">
+                            <td colspan="6">
+                                <form class="fulfil-form" method="POST" action="{{ route('orders.update', $order->id) }}">
+                                    @csrf
+                                    @method('PATCH')
+                                    <div>
+                                        <label>Status</label>
+                                        <select name="status">
+                                            @foreach(\App\Models\Order::FULFILMENT_STATUSES as $s)
+                                                <option value="{{ $s }}" @selected($order->status === $s)>{{ ucfirst($s) }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label>Amazon order number</label>
+                                        <input type="text" name="supplier_order_ref" value="{{ $order->supplier_order_ref }}" placeholder="114-1234567-1234567">
+                                    </div>
+                                    <div>
+                                        <label>Carrier</label>
+                                        <input type="text" name="carrier" value="{{ $order->carrier }}" placeholder="UPS / USPS / FedEx / Amazon" list="carriers">
+                                        <datalist id="carriers">
+                                            <option value="UPS"></option>
+                                            <option value="USPS"></option>
+                                            <option value="FedEx"></option>
+                                            <option value="Amazon"></option>
+                                        </datalist>
+                                    </div>
+                                    <div>
+                                        <label>Tracking number</label>
+                                        <input type="text" name="tracking_number" value="{{ $order->tracking_number }}">
+                                    </div>
+                                    <div>
+                                        <label>Internal note</label>
+                                        <input type="text" name="admin_note" value="{{ $order->admin_note }}" placeholder="Not shown to the customer">
+                                    </div>
+                                    <div><button type="submit">Save</button></div>
+                                    <p class="hint">
+                                        Setting the status to <strong>shipped</strong> emails the customer the tracking
+                                        number straight away. Saving a shipped order again will not email them twice.
+                                    </p>
+                                </form>
+                            </td>
+                        </tr>
+                    @endif
                 @empty
                     <tr><td colspan="6" style="text-align:center;">No {{ $status === 'all' ? '' : $status }} orders yet.</td></tr>
                 @endforelse
@@ -95,4 +168,11 @@
         </div>
     </div>
 </div>
+
+<script>
+function toggleFulfil(id) {
+    var row = document.getElementById('fulfil-' + id);
+    row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
+}
+</script>
 @endsection

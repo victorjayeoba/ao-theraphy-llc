@@ -117,6 +117,9 @@ const Header = () => {
                   <DropdownMenuItem disabled className="text-xs opacity-70">
                     {user.email}
                   </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/orders" className="cursor-pointer">My orders</Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={logout} className="cursor-pointer">
                     <LogOut size={14} className="mr-2" />
                     Sign Out

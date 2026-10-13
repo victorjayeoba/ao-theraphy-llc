@@ -34,7 +34,11 @@ return [
     |
     */
 
-    'guard' => ['web'],
+    // No session fallback. With 'web' here, an admin holding a dashboard session cookie is
+    // accepted by the `auth:customer` guard and $request->user() hands back a User instead of
+    // a Customer — which would also stamp an admin's id into orders.customer_id at checkout.
+    // Shop accounts authenticate by bearer token only.
+    'guard' => [],
 
     /*
     |--------------------------------------------------------------------------
